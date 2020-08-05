@@ -1,0 +1,1 @@
+exports.EPSILON = Number.EPSILON;

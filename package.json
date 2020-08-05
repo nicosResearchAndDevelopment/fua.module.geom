@@ -1,0 +1,30 @@
+{
+  "name": "module.geom",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/module.geom.js",
+  "devDependencies": {
+    "jest": "26.x"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "rootDir": "test",
+    "verbose": false,
+    "testRegex": "(\\.|/)test\\.js$"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@git02.int.nsc.ag:10022/Research/fua/lib/module.geom.git"
+  },
+  "keywords": [
+    "GeoJSON",
+    "Geometry"
+  ],
+  "author": "",
+  "license": "ISC"
+}
