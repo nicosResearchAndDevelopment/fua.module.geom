@@ -1,6 +1,6 @@
 module.exports = ({
-    "name": name = "module.geom",
-    "tolerance": tolerance = Number.EPSILON
+    'name': name = 'module.geom',
+    'tolerance': tolerance = Number.EPSILON
 }) => {
 
     const conf = {

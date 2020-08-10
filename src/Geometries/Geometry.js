@@ -1,103 +1,127 @@
 module.exports = ({
     geom, algo, util: {
-        $species, $iterator, $name, $name_tag, $children, $child_species, $min_childs, $max_childs,
-        assert, lockProp, isObject, isArray, isNumber, isFloat, isGeometry, isPosition
+        $species, $iterator, $name, $name_tag, $coords, $coord_species, $min_size, $max_size, $locked, $serialize,
+        assert, lockProp, isObject, isArray, isNumber, isBoolean, isFloat, isGeometry, isPosition
     }
 }) => {
 
     class Geometry {
 
-        static get [$name]() { return "Geometry"; }
+        static get [$name]() { return 'Geometry'; }
         static get [$species]() { return Geometry; }
-        static get [$child_species]() { return Geometry; }
-        static get [$min_childs]() { return 0; }
-        static get [$max_childs]() { return Number.MAX_SAFE_INTEGER; }
+        static get [$coord_species]() { return Geometry; }
+        static get [$min_size]() { return 0; }
+        static get [$max_size]() { return Number.MAX_SAFE_INTEGER; }
 
         /**
-         * @typedef {Class<Geometry|Number>} ChildSpecies
+         * @typedef {Class<Geometry|Number>} CoordSpecies
          * 
          * @abstract
-         * @param {...ChildSpecies} children
+         * @param {...CoordSpecies} coords
          */
-        constructor(...children) {
+        constructor(...coords) {
 
-            const {
-                [$species]: species,
-                [$child_species]: child_species,
-                [$min_childs]: min_childs,
-                [$max_childs]: max_childs
-            } = new.target, {
-                [$name_tag]: name_tag
-            } = this;
+            const species = new.target;
 
             assert(species !== Geometry,
-                `${name_tag}#constructor : is @abstract`);
-            assert(children.length >= min_childs,
-                `${name_tag}#constructor : expected at least ${min_childs} arguments`);
-            assert(children.length <= max_childs,
-                `${name_tag}#constructor : expected at maximum ${max_childs} arguments`);
-            if (child_species === Number) assert(children.every(isFloat),
-                `${name_tag}#constructor : invalid @param {...Number} args`);
-            else assert(children.every(val => val instanceof child_species),
-                `${name_tag}#constructor : invalid @param {...${child_species.name}} args`);
+                `${species[$name_tag]}#constructor : is @abstract`);
+            assert(coords.length >= species[$min_size],
+                `${species[$name_tag]}#constructor : expected at least ${species[$min_size]} arguments`);
+            assert(coords.length <= species[$max_size],
+                `${species[$name_tag]}#constructor : expected at maximum ${species[$max_size]} arguments`);
+            if (species[$coord_species] === Number) assert(coords.every(isFloat),
+                `${species[$name_tag]}#constructor : invalid @param {...Number} args`);
+            else assert(coords.every(val => val instanceof species[$coord_species]),
+                `${species[$name_tag]}#constructor : invalid @param {...${species[$coord_species][$name]}} args`);
 
-            /** @type {Array<ChildSpecies>} */
-            this[$children] = children;
-            lockProp(this, $children);
+            /** @type {Class<Geometry>} */
+            this[$species] = species;
+            lockProp(this, $species);
+
+            /** @type {Array<CoordSpecies>} */
+            this[$coords] = coords;
+            lockProp(this, $coords);
 
         } // Geometry#constructor
 
-        get [$name_tag]() { return this.__proto__.constructor.name; }
-        get [$iterator]() { return this[$children][$iterator]; }
+        get [$name_tag]() { return this[$species][$name]; }
+        get [$iterator]() { return this[$coords][$iterator]; }
 
-        // TODO
-        // lock() {
-        //     if (this[$child_species] !== Number) {
-        //         Object.freeze(this[$children]);
-        //         for (let child of this[$children]) {
-        //             child.lock();
-        //         }
-        //     }
-        // } // Geometry#lock
+        /**
+         * @returns {Boolean}
+         */
+        lock() {
+            if (this[$locked]) return false;
+            Object.freeze(this[$coords]);
+            this[$locked] = true;
+            if (this[$species][$coord_species] !== Number) {
+                for (let child of this[$coords]) {
+                    child.lock();
+                }
+            }
+            return true;
+        } // Geometry#lock
 
-        // /**
-        //  * @returns {JSON}
-        //  */
-        // toJSON() {
-        //     const result = { "type": this[$name_tag] };
+        /**
+         * @type {Array<Array|Number>}
+         */
+        get coordinates() {
+            const species = this[$species];
+            let coords = null;
+            if (this[$locked]) {
+                if (isArray(this[$locked])) {
+                    coords = this[$locked];
+                } else if (species[$coord_species] === Number) {
+                    coords = this[$coords];
+                    this[$locked] = coords;
+                } else if (species[$coord_species] !== Geometry) {
+                    coords = this[$coords].map(that => that.coordinates).filter(that => that);
+                    Object.freeze(coords);
+                    this[$locked] = coords;
+                }
+            } else {
+                if (species[$coord_species] === Number) {
+                    coords = this[$coords].map(value => value);
+                } else if (species[$coord_species] !== Geometry) {
+                    coords = this[$coords].map(that => that.coordinates);
+                }
+            }
+            return coords;
+        } // Geometry#coordinates
 
-        //     if (this[$child_species] === Geometry)
-        //         result["geometries"] = this[$children].map(child => child.toJSON());
-        //     else if (this[$child_species] === Number)
-        //         result["coordinates"] = this[$children].toJSON();
-        //     else
-        //         result["coordinates"] = (function collect(geom) {
-        //             if (geom[$child_species] === Number)
-        //                 return geom[$children].toJSON();
-        //             else
-        //                 return geom[$children].map(collect);
-        //         })(this);
+        /**
+         * @returns {JSON}
+         */
+        [$serialize]() {
+            const
+                species = this[$species],
+                coords = this.coordinates,
+                result = {};
 
-        //     return result;
-        // } // Geometry#toJSON
+            result['type'] = species[$name];
+            if (coords) result['coordinates'] = coords;
+            else result['geometries'] = this[$coords].map(that => that[$serialize]());
+
+            return result;
+        } // Geometry#[$serialize]
 
         // static from(arg) {
         //     /** @type {Class<Geometry>} */
         //     const targetType = this[Symbol.species];
         //     if (targetType === Geometry) {
         //         assert(isObject(arg), `Geometry.from : invalid @param {Object} arg`);
-        //         switch (arg["type"]) {
-        //             case "Point": return geom.Point.from(arg["coordinates"]);
-        //             case "MultiPoint": return geom.MultiPoint.from(arg["coordinates"]);
-        //             case "LineString": return geom.LineString.from(arg["coordinates"]);
-        //             case "MultiLineString": return geom.MultiLineString.from(arg["coordinates"]);
-        //             case "Polygon": return geom.Polygon.from(arg["coordinates"]);
-        //             case "MultiPolygon": return geom.MultiPolygon.from(arg["coordinates"]);
-        //             case "GeometryCollection": return geom.GeometryCollection.from(arg["geometries"]);
-        //             default: assert(false, `Geometry.from : unknown type ${arg["type"]}`);
+        //         switch (arg['type']) {
+        //             case 'Point': return geom.Point.from(arg['coordinates']);
+        //             case 'MultiPoint': return geom.MultiPoint.from(arg['coordinates']);
+        //             case 'LineString': return geom.LineString.from(arg['coordinates']);
+        //             case 'MultiLineString': return geom.MultiLineString.from(arg['coordinates']);
+        //             case 'Polygon': return geom.Polygon.from(arg['coordinates']);
+        //             case 'MultiPolygon': return geom.MultiPolygon.from(arg['coordinates']);
+        //             case 'GeometryCollection': return geom.GeometryCollection.from(arg['geometries']);
+        //             default: assert(false, `Geometry.from : unknown type ${arg['type']}`);
         //         }
         //     } else if (Geometry.isPrototypeOf(targetType)) {
-        //         const child_species = targetType[$child_species];
+        //         const child_species = targetType[$coord_species];
         //         if (child_species === Number) {
         //             assert(isArray(arg) || isPosition(arg) || isFloatArray(arg),
         //                 `Geometry.from : invalid @param {Array|FloatArray} arg`);

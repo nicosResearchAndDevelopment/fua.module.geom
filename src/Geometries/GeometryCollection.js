@@ -5,16 +5,16 @@ module.exports = ({
     }
 }) => {
 
-    class Line extends geom.Geometry {
+    class GeometryCollection extends geom.Geometry {
 
-        static get [$name]() { return 'Line'; }
-        static get [$species]() { return Line; }
+        static get [$name]() { return 'GeometryCollection'; }
+        static get [$species]() { return GeometryCollection; }
         static get [$coord_species]() { return geom.Geometry; }
         static get [$min_size]() { return 0; }
         static get [$max_size]() { return 0; }
 
-    } // Line
+    } // GeometryCollection
 
-    return Line;
+    return GeometryCollection;
 
 }; // module.exports

@@ -5,16 +5,16 @@ module.exports = ({
     }
 }) => {
 
-    class Line extends geom.Geometry {
+    class MultiPolygon extends geom.Geometry {
 
-        static get [$name]() { return 'Line'; }
-        static get [$species]() { return Line; }
+        static get [$name]() { return 'MultiPolygon'; }
+        static get [$species]() { return MultiPolygon; }
         static get [$coord_species]() { return geom.Geometry; }
         static get [$min_size]() { return 0; }
         static get [$max_size]() { return 0; }
 
-    } // Line
+    } // MultiPolygon
 
-    return Line;
+    return MultiPolygon;
 
 }; // module.exports

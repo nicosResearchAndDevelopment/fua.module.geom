@@ -1,23 +1,22 @@
 const
-    initConfig = require("./config.js"),
-    initUtility = require("./util.js"),
-    initAlgorithms = require("./algorithms.js"),
-    initGeometry = require("./geometries/Geometry.js"),
-    initPosition = require("./geometries/Position.js"),
-    initLine = require("./geometries/Line.js"),
-    initPoint = require("./geometries/Point.js"),
-    initMultiPoint = require("./geometries/MultiPoint.js"),
-    initLineString = require("./geometries/LineString.js"),
-    initMultiLineString = require("./geometries/MultiLineString.js"),
-    initLinearRing = require("./geometries/LinearRing.js"),
-    initPolygon = require("./geometries/Polygon.js"),
-    initMultiPolygon = require("./geometries/MultiPolygon.js"),
-    initGeometryCollection = require("./geometries/GeometryCollection.js");
+    initConfig = require('./config.js'),
+    initUtility = require('./util.js'),
+    initAlgorithms = require('./algorithms.js'),
+    initGeometry = require('./geometries/Geometry.js'),
+    initPoint = require('./geometries/Point.js'),
+    initMultiPoint = require('./geometries/MultiPoint.js'),
+    initLine = require('./geometries/Line.js'),
+    initLineString = require('./geometries/LineString.js'),
+    initMultiLineString = require('./geometries/MultiLineString.js'),
+    initLinearRing = require('./geometries/LinearRing.js'),
+    initPolygon = require('./geometries/Polygon.js'),
+    initMultiPolygon = require('./geometries/MultiPolygon.js'),
+    initGeometryCollection = require('./geometries/GeometryCollection.js');
 
 module.exports = ({
-    "hrt": hrt = () => 1e-3 * Date.now(),
-    "config": config = {}
-}) => {
+    'hrt': hrt = () => 1e-3 * Date.now(),
+    'config': config = {}
+} = {}) => {
 
     const
         conf = initConfig(config),
@@ -26,11 +25,10 @@ module.exports = ({
         algo = initAlgorithms({ geom, conf, util }),
         param = { geom, algo, util };
 
-    geom.Line = initLine(param);
-    geom.Position = initPosition(param);
     geom.Geometry = initGeometry(param);
     geom.Point = initPoint(param);
     geom.MultiPoint = initMultiPoint(param);
+    geom.Line = initLine(param);
     geom.LineString = initLineString(param);
     geom.MultiLineString = initMultiLineString(param);
     geom.LinearRing = initLinearRing(param);
@@ -39,31 +37,31 @@ module.exports = ({
     geom.GeometryCollection = initGeometryCollection(param);
 
     return Object.create({}, {
-        "Point": {
+        'Point': {
             value: geom.Point,
             enumerable: true
         },
-        "MultiPoint": {
+        'MultiPoint': {
             value: geom.MultiPoint,
             enumerable: true
         },
-        "LineString": {
+        'LineString': {
             value: geom.LineString,
             enumerable: true
         },
-        "MultiLineString": {
+        'MultiLineString': {
             value: geom.MultiLineString,
             enumerable: true
         },
-        "Polygon": {
+        'Polygon': {
             value: geom.Polygon,
             enumerable: true
         },
-        "MultiPolygon": {
+        'MultiPolygon': {
             value: geom.MultiPolygon,
             enumerable: true
         },
-        "GeometryCollection": {
+        'GeometryCollection': {
             value: geom.GeometryCollection,
             enumerable: true
         }

@@ -4,14 +4,16 @@ module.exports = ({
 
     const util = {};
 
-    util.$name = "name";
+    util.$name = 'name';
     util.$species = Symbol.species;
     util.$iterator = Symbol.iterator;
     util.$name_tag = Symbol.toStringTag;
-    util.$children = Symbol();
-    util.$child_species = Symbol();
-    util.$min_childs = Symbol();
-    util.$max_childs = Symbol();
+    util.$coords = Symbol('$coords');
+    util.$coord_species = Symbol('$coord_species');
+    util.$min_size = Symbol('$min_size');
+    util.$max_size = Symbol('$max_size');
+    util.$locked = Symbol('$locked');
+    util.$serialize = 'toJSON';
 
     /**
      * @param {*} value 
@@ -56,7 +58,7 @@ module.exports = ({
      * @returns {true|false}
      */
     util.isFunction = function (value) {
-        return typeof value === "function";
+        return typeof value === 'function';
     };
 
     /**
@@ -68,8 +70,8 @@ module.exports = ({
      */
     util.isClass = function (value) {
         return util.isFunction(value)
-            && value.hasOwnProperty("prototype")
-            && !value.hasOwnProperty("arguments");
+            && value.hasOwnProperty('prototype')
+            && !value.hasOwnProperty('arguments');
     };
 
     /**
@@ -77,7 +79,7 @@ module.exports = ({
      * @returns {true|false}
      */
     util.isObject = function (value) {
-        return typeof value === "object" && value !== null;
+        return typeof value === 'object' && value !== null;
     };
 
     /**
@@ -85,7 +87,7 @@ module.exports = ({
      * @returns {true|false}
      */
     util.isString = function (value) {
-        return typeof value === "string";
+        return typeof value === 'string';
     };
 
     /**
@@ -93,7 +95,15 @@ module.exports = ({
      * @returns {true|false}
      */
     util.isSymbol = function (value) {
-        return typeof value === "symbol";
+        return typeof value === 'symbol';
+    };
+
+    /**
+     * @param {Boolean|*} value 
+     * @returns {true|false}
+     */
+    util.isBoolean = function (value) {
+        return typeof value === 'boolean';
     };
 
     /**
@@ -126,7 +136,7 @@ module.exports = ({
      * @returns {true|false} 
      */
     util.isNumber = function (value) {
-        return typeof value === "number"
+        return typeof value === 'number'
             && !isNaN(value);
     };
 
@@ -145,7 +155,7 @@ module.exports = ({
      * @returns {true|false} 
      */
     util.isInt = function (value) {
-        // return typeof value === "number"
+        // return typeof value === 'number'
         //     && value === parseInt(value);
         return Number.isInteger(value);
     };
@@ -192,7 +202,7 @@ module.exports = ({
      * @returns {true|false}
      */
     util.isFloat = function (value) {
-        return typeof value === "number"
+        return typeof value === 'number'
             && value === parseFloat(value);
     };
 
