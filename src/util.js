@@ -232,35 +232,19 @@ module.exports = ({
     };
 
     /**
-     * @param {GeometryCollection|*} value 
-     * @returns {true|false}
-     */
-    util.isGeometryCollection = function (value) {
-        return value instanceof geom.GeometryCollection;
-    };
-
-    /**
-     * @param {Position|*} value 
-     * @returns {true|false}
-     */
-    util.isPosition = function (value) {
-        return value instanceof geom.Position;
-    };
-
-    /**
-     * @param {Line|*} value 
-     * @returns {true|false}
-     */
-    util.isLine = function (value) {
-        return value instanceof geom.Line;
-    };
-
-    /**
      * @param {Point|*} value 
      * @returns {true|false}
      */
     util.isPoint = function (value) {
         return value instanceof geom.Point;
+    };
+
+    /**
+     * @param {BBox|*} value 
+     * @returns {true|false}
+     */
+    util.isBBox = function (value) {
+        return value instanceof geom.BBox;
     };
 
     /**
@@ -272,11 +256,27 @@ module.exports = ({
     };
 
     /**
+     * @param {Line|*} value 
+     * @returns {true|false}
+     */
+    util.isLine = function (value) {
+        return value instanceof geom.Line;
+    };
+
+    /**
      * @param {LineString|*} value 
      * @returns {true|false}
      */
     util.isLineString = function (value) {
         return value instanceof geom.LineString;
+    };
+
+    /**
+     * @param {LinearRing|*} value 
+     * @returns {true|false}
+     */
+    util.isLinearRing = function (value) {
+        return value instanceof geom.LinearRing;
     };
 
     /**
@@ -301,6 +301,14 @@ module.exports = ({
      */
     util.isMultiPolygon = function (value) {
         return value instanceof geom.MultiPolygon;
+    };
+
+    /**
+     * @param {GeometryCollection|*} value 
+     * @returns {true|false}
+     */
+    util.isGeometryCollection = function (value) {
+        return value instanceof geom.GeometryCollection;
     };
 
     return Object.freeze(util);

@@ -4,6 +4,7 @@ const
     initAlgorithms = require('./algorithms.js'),
     initGeometry = require('./geometries/Geometry.js'),
     initPoint = require('./geometries/Point.js'),
+    initBBox = require('./geometries/BBox.js'),
     initMultiPoint = require('./geometries/MultiPoint.js'),
     initLine = require('./geometries/Line.js'),
     initLineString = require('./geometries/LineString.js'),
@@ -27,6 +28,7 @@ module.exports = ({
 
     geom.Geometry = initGeometry(param);
     geom.Point = initPoint(param);
+    geom.BBox = initBBox(param);
     geom.MultiPoint = initMultiPoint(param);
     geom.Line = initLine(param);
     geom.LineString = initLineString(param);

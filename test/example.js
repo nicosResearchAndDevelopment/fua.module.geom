@@ -1,6 +1,6 @@
+const initGeom = require('../src/module.geom.js');
 const Point = require('../src/geometries/Point.js');
-
-const geom = require('../src/module.geom.js')();
+const geom = initGeom();
 console.log("geom:", geom);
 const point = new geom.Point(1, 3);
 console.log("point:", point);
@@ -10,4 +10,8 @@ console.log("multi_point.json:", JSON.stringify(multi_point, null, 2));
 multi_point.lock();
 console.log("multi_point.bbox:", multi_point.bbox().coordinates());
 console.log("line:", point.lineTo(new geom.Point(2, 4)));
+const line_string = new geom.LineString(point, new geom.Point(2, 2));
+console.log("multi_point.bbox.contains:", line_string.coordinates(), multi_point.bbox().contains(line_string));
+line_string.add(new geom.Point(3, 0));
+console.log("multi_point.bbox.contains:", line_string.coordinates(), multi_point.bbox().contains(line_string));
 debugger;
