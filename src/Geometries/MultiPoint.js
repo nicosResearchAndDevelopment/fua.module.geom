@@ -10,7 +10,7 @@ module.exports = ({
         static get [$name]() { return 'MultiPoint'; }
         static get [$species]() { return MultiPoint; }
         static get [$coord_species]() { return geom.Point; }
-        static get [$unique_coords]() { return false; }
+        static get [$unique_coords]() { return true; }
 
     } // MultiPoint
 

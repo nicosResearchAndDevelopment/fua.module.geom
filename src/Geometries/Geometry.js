@@ -1,7 +1,8 @@
 module.exports = ({
     geom, algo, util: {
-        $species, $iterator, $name, $name_tag, $coords, $coord_species, $unique_coords, $min_size, $max_size, $locked, $serialize, $deserialize,
-        assert, lockProp, isObject, isArray, isFloat, isBoolean, isGeometry
+        $species, $iterator, $name, $name_tag, $coords, $coord_species, $unique_coords, $min_size, $max_size,
+        $locked, $bbox, $serialize, $deserialize,
+        assert, lockProp, isObject, isArray, isFloat, isBoolean, isGeometry, isPoint, isLine
     }
 }) => {
 
@@ -50,13 +51,21 @@ module.exports = ({
         get size() { return this[$coords].length; }
 
         /**
+         * @param {Boolean} [deep=true]
          * @returns {Boolean}
          */
-        lock() {
+        lock(deep = true) {
             if (this[$locked]) return false;
+            const bbox = this.bbox(true);
+            Object.freeze(bbox[$coords]);
+            if (isLine(bbox)) {
+                Object.freeze(bbox.from[$coords]);
+                Object.freeze(bbox.to[$coords]);
+            }
+            bbox[$locked] = true;
             Object.freeze(this[$coords]);
             this[$locked] = true;
-            if (this[$species][$coord_species] !== Number) {
+            if (deep && this[$species][$coord_species] !== Number) {
                 for (let child of this[$coords]) {
                     child.lock();
                 }
@@ -90,6 +99,48 @@ module.exports = ({
             }
             return coords;
         } // Geometry#coordinates
+
+        /**
+         * @param {Boolean} [refresh=false]
+         * @returns {Line|Point}
+         */
+        bbox(refresh = false) {
+            if (this[$locked]) return this[$bbox];
+            if (this[$species][$coord_species] === Number) return this;
+            let bbox = this[$bbox];
+
+            if (!bbox) {
+                bbox = new geom.Line(
+                    new geom.Point(Infinity, Infinity),
+                    new geom.Point(-Infinity, -Infinity)
+                );
+                bbox[$bbox] = bbox;
+                this[$bbox] = bbox;
+                refresh = true;
+            } else if (refresh) {
+                bbox.from.x = Infinity;
+                bbox.from.y = Infinity;
+                bbox.to.x = -Infinity;
+                bbox.to.y = -Infinity;
+            }
+
+            if (refresh) for (let that of this[$coords]) {
+                const that_bbox = that.bbox(refresh);
+                if (isLine(that_bbox)) {
+                    bbox.from.x = Math.min(bbox.from.x, that_bbox.from.x);
+                    bbox.from.y = Math.min(bbox.from.y, that_bbox.from.y);
+                    bbox.to.x = Math.max(bbox.to.x, that_bbox.to.x);
+                    bbox.to.y = Math.max(bbox.to.y, that_bbox.to.y);
+                } else {
+                    bbox.from.x = Math.min(bbox.from.x, that_bbox.x);
+                    bbox.from.y = Math.min(bbox.from.y, that_bbox.y);
+                    bbox.to.x = Math.max(bbox.to.x, that_bbox.x);
+                    bbox.to.y = Math.max(bbox.to.y, that_bbox.y);
+                }
+            } // if for
+
+            return bbox;
+        } // Geometry#bbox
 
         /**
          * @param {CoordSpecies} coord 

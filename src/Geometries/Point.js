@@ -5,6 +5,8 @@ module.exports = ({
     }
 }) => {
 
+    const $cached_lines = Symbol('$cached_lines');
+
     class Point extends geom.Geometry {
 
         static get [$name]() { return 'Point'; }
@@ -12,6 +14,14 @@ module.exports = ({
         static get [$coord_species]() { return Number; }
         static get [$min_size]() { return 2; }
         static get [$max_size]() { return 3; }
+
+        constructor(...args) {
+            super(...args);
+
+            /** @type {WeakMap<Point, Line>} */
+            this[$cached_lines] = new WeakMap();
+            lockProp(this, $cached_lines);
+        } // Point#constructor
 
         /** @type {Float} */
         get x() { return this[$coords][0]; }
@@ -24,6 +34,20 @@ module.exports = ({
         /** @type {Float|undefined} */
         get z() { return this[$coords][2]; }
         set z(value) { if (!this[$locked] && isFloat(value) && this[$coords].length > 2) this[$coords][2] = value; }
+
+        /**
+         * @param {Point} point 
+         * @returns {Line}
+         */
+        lineTo(point) {
+            if (this[$cached_lines].has(point)) {
+                return this[$cached_lines].get(point);
+            } else {
+                const line = new geom.Line(this, point);
+                this[$cached_lines].set(point, line);
+                return line;
+            }
+        } // Point#lineTo
 
         /**
          * Two sets A and B are equal, if for every point a in A and every point b in B, also a is in B and b is in A.

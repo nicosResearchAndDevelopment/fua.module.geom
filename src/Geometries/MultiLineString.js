@@ -1,6 +1,6 @@
 module.exports = ({
     geom, algo, util: {
-        $name, $name_tag, $species, $coord_species, $min_size, $max_size, $coords,
+        $name, $name_tag, $species, $coord_species, $unique_coords, $coords,
         assert, lockProp,
     }
 }) => {
@@ -9,9 +9,8 @@ module.exports = ({
 
         static get [$name]() { return 'MultiLineString'; }
         static get [$species]() { return MultiLineString; }
-        static get [$coord_species]() { return geom.Geometry; }
-        static get [$min_size]() { return 0; }
-        static get [$max_size]() { return 0; }
+        static get [$coord_species]() { return geom.LineString; }
+        static get [$unique_coords]() { return true; }
 
     } // MultiLineString
 
