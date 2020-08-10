@@ -1,5 +1,4 @@
-const initGeom = require('../src/module.geom.js');
-const geom = initGeom();
+const geom = require('../src/module.geom.js')();
 console.log("geom:", geom);
 const point = new geom.Point(1, 3);
 console.log("point:", point);
