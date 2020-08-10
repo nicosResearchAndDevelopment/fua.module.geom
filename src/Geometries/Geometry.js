@@ -1,7 +1,7 @@
 module.exports = ({
     geom, algo, util: {
-        $species, $iterator, $name, $name_tag, $coords, $coord_species, $min_size, $max_size, $locked, $serialize,
-        assert, lockProp, isObject, isArray, isNumber, isBoolean, isFloat, isGeometry, isPosition
+        $species, $iterator, $name, $name_tag, $coords, $coord_species, $unique_coords, $min_size, $max_size, $locked, $serialize, $deserialize,
+        assert, lockProp, isObject, isArray, isFloat, isBoolean, isGeometry
     }
 }) => {
 
@@ -10,6 +10,7 @@ module.exports = ({
         static get [$name]() { return 'Geometry'; }
         static get [$species]() { return Geometry; }
         static get [$coord_species]() { return Geometry; }
+        static get [$unique_coords]() { return false; }
         static get [$min_size]() { return 0; }
         static get [$max_size]() { return Number.MAX_SAFE_INTEGER; }
 
@@ -46,6 +47,7 @@ module.exports = ({
 
         get [$name_tag]() { return this[$species][$name]; }
         get [$iterator]() { return this[$coords][$iterator]; }
+        get size() { return this[$coords].length; }
 
         /**
          * @returns {Boolean}
@@ -63,9 +65,9 @@ module.exports = ({
         } // Geometry#lock
 
         /**
-         * @type {Array<Array|Number>}
+         * @returns {Array<Array|Number>}
          */
-        get coordinates() {
+        coordinates() {
             const species = this[$species];
             let coords = null;
             if (this[$locked]) {
@@ -75,7 +77,7 @@ module.exports = ({
                     coords = this[$coords];
                     this[$locked] = coords;
                 } else if (species[$coord_species] !== Geometry) {
-                    coords = this[$coords].map(that => that.coordinates).filter(that => that);
+                    coords = this[$coords].map(that => that.coordinates()).filter(that => that);
                     Object.freeze(coords);
                     this[$locked] = coords;
                 }
@@ -83,19 +85,66 @@ module.exports = ({
                 if (species[$coord_species] === Number) {
                     coords = this[$coords].map(value => value);
                 } else if (species[$coord_species] !== Geometry) {
-                    coords = this[$coords].map(that => that.coordinates);
+                    coords = this[$coords].map(that => that.coordinates());
                 }
             }
             return coords;
         } // Geometry#coordinates
 
         /**
-         * @returns {JSON}
+         * @param {CoordSpecies} coord 
+         * @returns {Boolean}
+         */
+        add(coord) {
+            assert(!this[$locked], `${this[$name_tag]}#add : locked`);
+            const species = this[$species], coord_species = species[$coord_species];
+            if (coord_species === Number) assert(isFloat(coord), `${this[$name_tag]}#add : invalid @param {Float} coord`);
+            else assert(coord instanceof coord_species, `${this[$name_tag]}#add : invalid @param {${coord_species[$name]}} coord`);
+            assert(this.size < species[$max_size], `${this[$name_tag]}#add : reached maximum size of ${species[$max_size]}`);
+
+            if (this[$unique_coords] && this[$coords].includes(coord)) return false;
+            this[$coords].push(coord);
+            return true;
+        } // Geometry#add
+
+        /**
+         * @param {CoordSpecies} coord 
+         * @returns {Boolean}
+         */
+        insert(coord) {
+            assert(!this[$locked], `${this[$name_tag]}#insert : locked`);
+            const species = this[$species], coord_species = species[$coord_species];
+            if (coord_species === Number) assert(isFloat(coord), `${this[$name_tag]}#insert : invalid @param {Float} coord`);
+            else assert(coord instanceof coord_species, `${this[$name_tag]}#insert : invalid @param {${coord_species[$name]}} coord`);
+            assert(this.size < species[$max_size], `${this[$name_tag]}#insert : reached maximum size of ${species[$max_size]}`);
+
+            if (this[$unique_coords] && this[$coords].includes(coord)) return false;
+            this[$coords].unshift(coord);
+            return true;
+        } // Geometry#insert
+
+        /**
+         * @param {CoordSpecies} coord 
+         * @returns {Boolean}
+         */
+        remove(coord) {
+            assert(!this[$locked], `${this[$name_tag]}#remove : locked`);
+            const species = this[$species];
+            assert(this.size > species[$min_size], `${this[$name_tag]}#remove : reached minimum size of ${species[$min_size]}`);
+
+            const index = this[$coords].lastIndexOf(coord);
+            if (index < 0) return false;
+            this[$coords].splice(index, 1);
+            return true;
+        } // Geometry#remove
+
+        /**
+         * @returns {GeoJSON}
          */
         [$serialize]() {
             const
                 species = this[$species],
-                coords = this.coordinates,
+                coords = this.coordinates(),
                 result = {};
 
             result['type'] = species[$name];
@@ -105,6 +154,7 @@ module.exports = ({
             return result;
         } // Geometry#[$serialize]
 
+        // NOTE use [$deserialize] instead of 'from'
         // static from(arg) {
         //     /** @type {Class<Geometry>} */
         //     const targetType = this[Symbol.species];

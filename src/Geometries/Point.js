@@ -1,7 +1,7 @@
 module.exports = ({
     geom, algo, util: {
-        $name, $name_tag, $species, $coord_species, $min_size, $max_size, $coords,
-        assert, lockProp, isGeometry, isPoint
+        $name, $name_tag, $species, $coord_species, $min_size, $max_size, $coords, $locked,
+        assert, lockProp, isFloat, isGeometry, isPoint
     }
 }) => {
 
@@ -13,9 +13,17 @@ module.exports = ({
         static get [$min_size]() { return 2; }
         static get [$max_size]() { return 3; }
 
+        /** @type {Float} */
         get x() { return this[$coords][0]; }
+        set x(value) { if (!this[$locked] && isFloat(value)) this[$coords][0] = value; }
+
+        /** @type {Float} */
         get y() { return this[$coords][1]; }
+        set y(value) { if (!this[$locked] && isFloat(value)) this[$coords][1] = value; }
+
+        /** @type {Float|undefined} */
         get z() { return this[$coords][2]; }
+        set z(value) { if (!this[$locked] && isFloat(value) && this[$coords].length > 2) this[$coords][2] = value; }
 
         /**
          * Two sets A and B are equal, if for every point a in A and every point b in B, also a is in B and b is in A.

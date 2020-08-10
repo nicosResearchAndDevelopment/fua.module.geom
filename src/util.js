@@ -10,10 +10,12 @@ module.exports = ({
     util.$name_tag = Symbol.toStringTag;
     util.$coords = Symbol('$coords');
     util.$coord_species = Symbol('$coord_species');
+    util.$unique_coords = Symbol('$unique_coords');
     util.$min_size = Symbol('$min_size');
     util.$max_size = Symbol('$max_size');
     util.$locked = Symbol('$locked');
     util.$serialize = 'toJSON';
+    util.$deserialize = 'from';
 
     /**
      * @param {*} value 

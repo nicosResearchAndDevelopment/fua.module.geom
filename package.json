@@ -10,7 +10,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "example": "node test/example.js"
   },
   "jest": {
     "rootDir": "test",

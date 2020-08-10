@@ -9,9 +9,9 @@ module.exports = ({
 
         static get [$name]() { return 'Line'; }
         static get [$species]() { return Line; }
-        static get [$coord_species]() { return geom.Geometry; }
-        static get [$min_size]() { return 0; }
-        static get [$max_size]() { return 0; }
+        static get [$coord_species]() { return geom.Point; }
+        static get [$min_size]() { return 2; }
+        static get [$max_size]() { return 2; }
 
     } // Line
 
