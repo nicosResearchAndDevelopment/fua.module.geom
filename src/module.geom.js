@@ -70,6 +70,24 @@ module.exports = ({
         'GeometryCollection': {
             value: geom.GeometryCollection,
             enumerable: true
+        },
+        'equals': {
+            value: (i, j) => i.equals(j)
+        },
+        'contains': {
+            value: (i, j) => i.contains(j)
+        },
+        'intersects': {
+            value: (i, j) => i.intersects(j)
+        },
+        'overlaps': {
+            value: (i, j) => i.overlaps(j)
+        },
+        'touches': {
+            value: (i, j) => i.touches(j)
+        },
+        'disjoint': {
+            value: (i, j) => i.disjoint(j)
         }
     });
 
