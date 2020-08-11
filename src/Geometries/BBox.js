@@ -78,7 +78,15 @@ module.exports = ({
 
         contains(that) {
             assert(isGeometry(that), `${this[$name_tag]}#contains : invalid @param {Geometry} that`);
-            return algo.BBoxContainment(this, that);
+            if (isPoint(that)) {
+                return algo.BBoxContainment(this, that);;
+            } else {
+                for (let coord of that[$coords]) {
+                    if (!this.contains(coord))
+                        return false;
+                }
+                return true;
+            }
         } // BBox#contains
     } // BBox
 

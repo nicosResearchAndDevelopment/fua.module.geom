@@ -217,7 +217,7 @@ module.exports = ({
          * @returns {boolean}
          */
         equals(that) {
-            assert(false, `${this[$name_tag]}#equals : @interface not implemented`);
+            assert(false, `${this[$name_tag]}#equals :${this.equals === Geometry.prototype.equals ? ` @interface` : ` `} not implemented`);
         } // Geometry#equals
 
         /**
@@ -229,7 +229,7 @@ module.exports = ({
          * @returns {boolean}
          */
         contains(that) {
-            assert(false, `${this[$name_tag]}#contains : @interface not implemented`);
+            assert(false, `${this[$name_tag]}#contains :${this.contains === Geometry.prototype.contains ? ` @interface` : ` `} not implemented`);
         } // Geometry#contains
 
         /**
@@ -241,7 +241,7 @@ module.exports = ({
          * @returns {boolean}
          */
         intersects(that) {
-            assert(false, `${this[$name_tag]}#intersects : @interface not implemented`);
+            assert(false, `${this[$name_tag]}#intersects :${this.intersects === Geometry.prototype.intersects ? ` @interface` : ` `} not implemented`);
         } // Geometry#intersects
 
         /**
@@ -253,7 +253,7 @@ module.exports = ({
          * @returns {boolean}
          */
         overlaps(that) {
-            assert(false, `${this[$name_tag]}#overlaps : @interface not implemented`);
+            assert(false, `${this[$name_tag]}#overlaps :${this.overlaps === Geometry.prototype.overlaps ? ` @interface` : ` `} not implemented`);
         } // Geometry#overlaps
 
         /**
@@ -266,7 +266,7 @@ module.exports = ({
          * @returns {boolean}
          */
         touches(that) {
-            assert(false, `${this[$name_tag]}#touches : @interface not implemented`);
+            assert(false, `${this[$name_tag]}#touches :${this.touches === Geometry.prototype.touches ? ` @interface` : ` `} not implemented`);
         } // Geometry#touches
 
         /**
