@@ -17,8 +17,8 @@ module.exports = ({
 
     util.$locked = Symbol('$locked');
     util.$bbox = Symbol('$bbox');
-    util.$serialize = 'toJSON';
-    util.$deserialize = 'from';
+    util.$serialize = conf.serializer;
+    util.$deserialize = conf.deserializer;
 
     /**
      * @param {*} value 

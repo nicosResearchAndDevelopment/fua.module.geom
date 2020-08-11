@@ -39,6 +39,10 @@ module.exports = ({
     geom.GeometryCollection = initGeometryCollection(param);
 
     return Object.create({}, {
+        'Geometry': {
+            value: geom.Geometry,
+            enumerable: true
+        },
         'Point': {
             value: geom.Point,
             enumerable: true

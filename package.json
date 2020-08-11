@@ -15,7 +15,7 @@
   },
   "jest": {
     "rootDir": "test",
-    "verbose": false,
+    "verbose": true,
     "testRegex": "(\\.|/)test\\.js$"
   },
   "repository": {

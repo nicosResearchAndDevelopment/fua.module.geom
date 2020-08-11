@@ -177,35 +177,37 @@ module.exports = ({
             return result;
         } // Geometry#[$serialize]
 
-        // NOTE use [$deserialize] instead of 'from'
-        // static from(arg) {
-        //     /** @type {Class<Geometry>} */
-        //     const targetType = this[Symbol.species];
-        //     if (targetType === Geometry) {
-        //         assert(isObject(arg), `Geometry.from : invalid @param {Object} arg`);
-        //         switch (arg['type']) {
-        //             case 'Point': return geom.Point.from(arg['coordinates']);
-        //             case 'MultiPoint': return geom.MultiPoint.from(arg['coordinates']);
-        //             case 'LineString': return geom.LineString.from(arg['coordinates']);
-        //             case 'MultiLineString': return geom.MultiLineString.from(arg['coordinates']);
-        //             case 'Polygon': return geom.Polygon.from(arg['coordinates']);
-        //             case 'MultiPolygon': return geom.MultiPolygon.from(arg['coordinates']);
-        //             case 'GeometryCollection': return geom.GeometryCollection.from(arg['geometries']);
-        //             default: assert(false, `Geometry.from : unknown type ${arg['type']}`);
-        //         }
-        //     } else if (Geometry.isPrototypeOf(targetType)) {
-        //         const child_species = targetType[$coord_species];
-        //         if (child_species === Number) {
-        //             assert(isArray(arg) || isPosition(arg) || isFloatArray(arg),
-        //                 `Geometry.from : invalid @param {Array|FloatArray} arg`);
-        //             return new targetType(...arg);
-        //         } else {
-        //             assert(isArray(arg),
-        //                 `Geometry.from : invalid @param {Array} arg`);
-        //             return new targetType(...(arg.map(child_species.from.bind(child_species))));
-        //         }
-        //     }
-        // } // Geometry.from
+        /**
+         * @param {GeoJSON|GeoJSON~Coordinates} json 
+         * @returns {Geometry}
+         */
+        static [$deserialize](json) {
+            /** @type {Class<Geometry>} */
+            const species = this[Symbol.species];
+            if (species === Geometry) {
+                assert(isObject(json), `Geometry.${$deserialize} : 'invalid @param {Object} json`);
+                const { 'type': type, 'coordinates': coordinates, 'geometries': geometries } = json;
+                switch (type) {
+                    case 'Point': return geom.Point.from(coordinates);
+                    case 'MultiPoint': return geom.MultiPoint.from(coordinates);
+                    case 'LineString': return geom.LineString.from(coordinates);
+                    case 'MultiLineString': return geom.MultiLineString.from(coordinates);
+                    case 'Polygon': return geom.Polygon.from(coordinates);
+                    case 'MultiPolygon': return geom.MultiPolygon.from(coordinates);
+                    case 'GeometryCollection': return geom.GeometryCollection.from(geometries);
+                    default: assert(false, `Geometry.${$deserialize} : '${type}' not supported`);
+                }
+            } else if (Geometry.isPrototypeOf(species)) {
+                const coord_species = species[$coord_species];
+                assert(isArray(json), `Geometry.${$deserialize} : 'invalid @param {Array} json`);
+                if (coord_species === Number) {
+                    return new species(...json);
+                } else {
+                    const coords = json.map(coord_species.from.bind(coord_species));
+                    return new species(...coords);
+                }
+            }
+        } // Geometry#[$deserialize]
 
         /**
          * Two sets A and B are equal, if for every point a in A and every point b in B, also a is in B and b is in A.
