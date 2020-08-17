@@ -23,6 +23,18 @@ module.exports = ({
         assert(false, `algo.intersects.Line_Line : not implemented`);
     }; // intersects.Line_Line
 
+    /** 
+     * @param {BBox} left 
+     * @param {BBox} right 
+     * @returns {Boolean}
+     */
+    intersects.BBox_BBox = function (left, right) {
+        return left.min.x <= right.max.x
+            && left.max.x >= right.min.x
+            && left.min.y <= right.max.y
+            && left.max.y >= right.min.y;
+    }; // intersects.BBox_BBox
+
     return Object.freeze(intersects);
 
 }; // module.exports
