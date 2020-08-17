@@ -1,5 +1,5 @@
 module.exports = ({
-    geom, algo, util: {
+    geom, conf, algo, util: {
         $species, $iterator, $name, $name_tag, $coords, $coord_species, $unique_coords, $min_size, $max_size,
         $locked, $bbox, $serialize, $deserialize,
         assert, lockProp, isObject, isArray, isFloat, isBoolean, isGeometry, isPoint, isLine, isBBox
@@ -170,9 +170,9 @@ module.exports = ({
                 coords = this.coordinates(),
                 result = {};
 
-            result['type'] = species[$name];
-            if (coords) result['coordinates'] = coords;
-            else result['geometries'] = this[$coords].map(that => that[$serialize]());
+            result['@type'] = `${conf.prefix}:${species[$name]}`;
+            if (coords) result[`${conf.prefix}:coordinates`] = coords;
+            else result[`${conf.prefix}:geometries`] = this[$coords].map(that => that[$serialize]());
 
             return result;
         } // Geometry#[$serialize]
@@ -184,101 +184,209 @@ module.exports = ({
         static [$deserialize](json) {
             /** @type {Class<Geometry>} */
             const species = this[Symbol.species];
+            let result = null;
+
             if (species === Geometry) {
                 assert(isObject(json), `Geometry.${$deserialize} : 'invalid @param {Object} json`);
-                const { 'type': type, 'coordinates': coordinates, 'geometries': geometries } = json;
+                const
+                    type = json['@type'] || json['type'],
+                    coordinates = json[`${conf.prefix}:coordinates`] || json['coordinates'],
+                    geometries = json[`${conf.prefix}:geometries`] || json['geometries'],
+                    reference = json[`${conf.prefix}:reference`] || { '@id': conf.reference }; // TODO include reference
+
                 switch (type) {
-                    case 'Point': return geom.Point.from(coordinates);
-                    case 'MultiPoint': return geom.MultiPoint.from(coordinates);
-                    case 'LineString': return geom.LineString.from(coordinates);
-                    case 'MultiLineString': return geom.MultiLineString.from(coordinates);
-                    case 'Polygon': return geom.Polygon.from(coordinates);
-                    case 'MultiPolygon': return geom.MultiPolygon.from(coordinates);
-                    case 'GeometryCollection': return geom.GeometryCollection.from(geometries);
-                    default: assert(false, `Geometry.${$deserialize} : '${type}' not supported`);
-                }
+
+                    case geom.Point[$name]:
+                    case `${conf.prefix}:${geom.Point[$name]}`:
+                        result = geom.Point.from(coordinates);
+                        break;
+
+                    case geom.MultiPoint[$name]:
+                    case `${conf.prefix}:${geom.MultiPoint[$name]}`:
+                        result = geom.MultiPoint.from(coordinates);
+                        break;
+
+                    case geom.LineString[$name]:
+                    case `${conf.prefix}:${geom.LineString[$name]}`:
+                        result = geom.LineString.from(coordinates);
+                        break;
+
+                    case geom.MultiLineString[$name]:
+                    case `${conf.prefix}:${geom.MultiLineString[$name]}`:
+                        result = geom.MultiLineString.from(coordinates);
+                        break;
+
+                    case geom.Polygon[$name]:
+                    case `${conf.prefix}:${geom.Polygon[$name]}`:
+                        result = geom.Polygon.from(coordinates);
+                        break;
+
+                    case geom.MultiPolygon[$name]:
+                    case `${conf.prefix}:${geom.MultiPolygon[$name]}`:
+                        result = geom.MultiPolygon.from(coordinates);
+                        break;
+
+                    case geom.GeometryCollection[$name]:
+                    case `${conf.prefix}:${geom.GeometryCollection[$name]}`:
+                        result = geom.GeometryCollection.from(geometries);
+                        break;
+
+                    default:
+                        assert(false, `Geometry.${$deserialize} : '${type}' not supported`);
+
+                } // switch (type)
             } else if (Geometry.isPrototypeOf(species)) {
                 const coord_species = species[$coord_species];
                 assert(isArray(json), `Geometry.${$deserialize} : 'invalid @param {Array} json`);
+
                 if (coord_species === Number) {
-                    return new species(...json);
+                    result = new species(...json);
                 } else {
                     const coords = json.map(coord_species.from.bind(coord_species));
-                    return new species(...coords);
+                    result = new species(...coords);
                 }
-            }
+            } // if else
+
+            return result;
         } // Geometry#[$deserialize]
 
         /**
-         * Two sets A and B are equal, if for every point a in A and every point b in B, also a is in B and b is in A.
-         * - symmetric
-         * @interface 
+         * {@link https://github.com/nicosResearchAndDevelopment/nrd-motic/blob/master/decide/operator/geometry.md#geomequals geom:equals}
+         * Two geometries A and B are equal, if:
+         * - for every point a in A, a is also in B
+         * - and for every point b in B, b is also in A.
          * @param {Geometry} that 
          * @returns {boolean}
          */
         equals(that) {
-            assert(false, `${this[$name_tag]}#equals :${this.equals === Geometry.prototype.equals ? ` @interface` : ` `} not implemented`);
+            // assert(isGeometry(that), `${this[$name_tag]}#equals : invalid @param {Geometry} that`);
+            assert(false, `${this[$name_tag]}#equals : not implemented`);
         } // Geometry#equals
 
         /**
-         * A set A contains a set B, if for every point b in B, also b is in A.
-         * If two sets contain each other, they must be equal.
-         * - not symmetric
-         * @interface 
-         * @param {Geometry} that 
-         * @returns {boolean}
-         */
-        contains(that) {
-            assert(false, `${this[$name_tag]}#contains :${this.contains === Geometry.prototype.contains ? ` @interface` : ` `} not implemented`);
-        } // Geometry#contains
-
-        /**
-         * A set A intersects a set B, if there exists a point p, such that p is in A and also in B.
-         * - symmetric
-         * - opposite of disjoint
-         * @interface 
-         * @param {Geometry} that 
-         * @returns {boolean}
-         */
-        intersects(that) {
-            assert(false, `${this[$name_tag]}#intersects :${this.intersects === Geometry.prototype.intersects ? ` @interface` : ` `} not implemented`);
-        } // Geometry#intersects
-
-        /**
-         * A set A overlaps a set B, if A intersects B, but A does not just touch B.
-         * Also the intersection shall have at least the dimensionality of the minimum dimensionality of the two sets.
-         * - symmetric
-         * @interface 
-         * @param {Geometry} that 
-         * @returns {boolean}
-         */
-        overlaps(that) {
-            assert(false, `${this[$name_tag]}#overlaps :${this.overlaps === Geometry.prototype.overlaps ? ` @interface` : ` `} not implemented`);
-        } // Geometry#overlaps
-
-        /**
-         * Two sets are touching, if they intersect and their intersection only includes their boundaries. 
-         * Also the tangent vectors of both sets at the point(s) of intersection should point in the same direction. 
-         * Also the intersection shall have at least 1 times less dimensionality than the maximum dimensionality of the two sets.
-         * - symmetric
-         * @interface 
-         * @param {Geometry} that 
-         * @returns {boolean}
-         */
-        touches(that) {
-            assert(false, `${this[$name_tag]}#touches :${this.touches === Geometry.prototype.touches ? ` @interface` : ` `} not implemented`);
-        } // Geometry#touches
-
-        /**
-         * A set A is disjoint with a set B, if there exists no point p, such that p is in A and also in B.
-         * - symmetric
-         * - opposite of intersects
+         * {@link https://github.com/nicosResearchAndDevelopment/nrd-motic/blob/master/decide/operator/geometry.md#geomdisjoint geom:disjoint}
+         * Two geometries A and B are disjoint, if:
+         * - for every point a in A, a is not in B.
          * @param {Geometry} that 
          * @returns {boolean}
          */
         disjoint(that) {
+            assert(isGeometry(that), `${this[$name_tag]}#disjoint : invalid @param {Geometry} that`);
             return !this.intersects(that);
         } // Geometry#disjoint
+
+        /**
+         * {@link https://github.com/nicosResearchAndDevelopment/nrd-motic/blob/master/decide/operator/geometry.md#geomintersects geom:intersects}
+         * Two geometries A and B intersect, if:
+         * - their exists at least one point a in A, that is also in B.
+         * @param {Geometry} that 
+         * @returns {boolean}
+         */
+        intersects(that) {
+            // assert(isGeometry(that), `${this[$name_tag]}#intersects : invalid @param {Geometry} that`);
+            assert(false, `${this[$name_tag]}#intersects : not implemented`);
+        } // Geometry#intersects
+
+        /**
+         * {@link https://github.com/nicosResearchAndDevelopment/nrd-motic/blob/master/decide/operator/geometry.md#geomtouches-geommeets geom:touches, geom:meets}
+         * Two geometries A and B are touching, if:
+         * - for every point a in the interior of A, a is not in the interior of B
+         * - and at least one point c on the boundary of A is on the boundary of B.
+         * @param {Geometry} that 
+         * @returns {boolean}
+         */
+        touches(that) {
+            // assert(isGeometry(that), `${this[$name_tag]}#touches : invalid @param {Geometry} that`);
+            assert(false, `${this[$name_tag]}#touches : not implemented`);
+        } // Geometry#touches
+
+        meets(that) {
+            assert(isGeometry(that), `${this[$name_tag]}#meets : invalid @param {Geometry} that`);
+            return this.touches(that);
+        } // Geometry#meets
+
+        /**
+         * {@link https://github.com/nicosResearchAndDevelopment/nrd-motic/blob/master/decide/operator/geometry.md#geomcontains geom:contains}
+         * A geometry A contains a geometry B, if:
+         * - for every point b in B, b is also in A
+         * - and at least one point c in the interior of B is also in the interior of A.
+         * @param {Geometry} that 
+         * @returns {boolean}
+         */
+        contains(that) {
+            // assert(isGeometry(that), `${this[$name_tag]}#contains : invalid @param {Geometry} that`);
+            assert(false, `${this[$name_tag]}#contains : not implemented`);
+        } // Geometry#contains
+
+        /**
+         * {@link https://github.com/nicosResearchAndDevelopment/nrd-motic/blob/master/decide/operator/geometry.md#geomoverlaps geom:overlaps}
+         * The geometries A and B are overlapping, if:
+         * - A intersects B
+         * - and the dimension of the intersection is the same as the dimension of A and B.
+         * @param {Geometry} that 
+         * @returns {boolean}
+         */
+        overlaps(that) {
+            // assert(isGeometry(that), `${this[$name_tag]}#overlaps : invalid @param {Geometry} that`);
+            assert(false, `${this[$name_tag]}#overlaps : not implemented`);
+        } // Geometry#overlaps
+
+        /**
+         * {@link https://github.com/nicosResearchAndDevelopment/nrd-motic/blob/master/decide/operator/geometry.md#geomcovers geom:covers}
+         * A geometry A covers a geometry B, if:
+         * - at least one point b in B is also in A
+         * - and there exists no point in B, which is in the exterior of A.
+         * @param {Geometry} that 
+         * @returns {boolean}
+         */
+        covers(that) {
+            // assert(isGeometry(that), `${this[$name_tag]}#covers : invalid @param {Geometry} that`);
+            assert(false, `${this[$name_tag]}#covers : not implemented`);
+        } // Geometry#covers
+
+        /**
+         * {@link https://github.com/nicosResearchAndDevelopment/nrd-motic/blob/master/decide/operator/geometry.md#geomcoveredby geom:coveredBy}
+         * A geometry A is coveredBy a geometry B, if:
+         * - at least one point a in A is also in B
+         * - and there exists no point in A, which is in the exterior of B.
+         * @param {Geometry} that 
+         * @returns {boolean}
+         */
+        coveredBy(that) {
+            assert(isGeometry(that), `${this[$name_tag]}#coveredBy : invalid @param {Geometry} that`);
+            return that.covers(this);
+        } // Geometry#coveredBy
+
+        /**
+         * {@link https://github.com/nicosResearchAndDevelopment/nrd-motic/blob/master/decide/operator/geometry.md#geominside-geomwithin geom:inside, geom:within}
+         * A geometry A is inside a geometry B, if:
+         * - for every point a in A, a is not in the exterior of B
+         * - and at least one point c in A is also in the interior of B.
+         * @param {Geometry} that 
+         * @returns {boolean}
+         */
+        inside(that) {
+            assert(isGeometry(that), `${this[$name_tag]}#inside : invalid @param {Geometry} that`);
+            return that.contains(this);
+        } // Geometry#inside
+
+        within(that) {
+            assert(isGeometry(that), `${this[$name_tag]}#within : invalid @param {Geometry} that`);
+            return that.contains(this);
+        } // Geometry#within
+
+        /**
+         * {@link https://github.com/nicosResearchAndDevelopment/nrd-motic/blob/master/decide/operator/geometry.md#geomcrosses geom:crosses}
+         * A geometry A crosses a geometry B, if:
+         * - A intersects B
+         * - and the dimension of the intersection is less than the maximum dimension of A and B.
+         * @param {Geometry} that 
+         * @returns {boolean}
+         */
+        crosses(that) {
+            // assert(isGeometry(that), `${this[$name_tag]}#crosses : invalid @param {Geometry} that`);
+            assert(false, `${this[$name_tag]}#crosses : not implemented`);
+        } // Geometry#crosses
 
     } // Geometry
 

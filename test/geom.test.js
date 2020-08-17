@@ -1,6 +1,7 @@
 const geom = require('../src/module.geom.js')({
     serializer: 'toJSON',
-    deserializer: 'from'
+    deserializer: 'from',
+    prefix: "geom"
 });
 const { Geometry, Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon, GeometryCollection } = geom;
 
@@ -8,8 +9,8 @@ describe("a Geometry should", () => {
 
     test("deserialize from GeoJSON", () => {
         expect(Geometry.from({
-            type: "LineString",
-            coordinates: [
+            "@type": "geom:LineString",
+            "geom:coordinates": [
                 [1, 2, 3],
                 [4, 5, 6],
                 [7, 8, 9]
@@ -19,25 +20,25 @@ describe("a Geometry should", () => {
 
     test("serialize into the same argument from deserialization", () => {
         const serialization = {
-            type: "GeometryCollection",
-            geometries: [{
-                type: "Point",
-                coordinates: [1, 2]
+            '@type': "geom:GeometryCollection",
+            'geom:geometries': [{
+                '@type': "geom:Point",
+                'geom:coordinates': [1, 2]
             }, {
-                type: "MultiPoint",
-                coordinates: [
+                '@type': "geom:MultiPoint",
+                'geom:coordinates': [
                     [2, 3],
                     [4, 5]
                 ]
             }, {
-                type: "MultiLineString",
-                coordinates: [
+                '@type': "geom:MultiLineString",
+                'geom:coordinates': [
                     [[1, 2], [2, 3]],
                     [[4, 5], [6, 7], [1, 2]]
                 ]
             }, {
-                type: "Polygon",
-                coordinates: [
+                '@type': "geom:Polygon",
+                'geom:coordinates': [
                     [[1, 2], [8, 9], [2, 3], [1, 2]]
                 ]
             }]

@@ -88,6 +88,14 @@ module.exports = ({
     };
 
     /**
+     * @param {Error|*} value 
+     * @returns {true|false}
+     */
+    util.isError = function (value) {
+        return value instanceof Error;
+    };
+
+    /**
      * @param {String|*} value
      * @returns {true|false}
      */
