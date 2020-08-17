@@ -30,10 +30,10 @@ module.exports = ({
      * @returns {Boolean}
      */
     contains.BBox_Point = function (left, right) {
-        return left.min.x < right.x
-            && left.max.x > right.x
-            && left.min.y < right.y
-            && left.max.y > right.y;
+        return left.min.x <= right.x
+            && left.max.x >= right.x
+            && left.min.y <= right.y
+            && left.max.y >= right.y;
     }; // contains.BBox_Point
 
     /** 

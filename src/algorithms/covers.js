@@ -24,18 +24,6 @@ module.exports = ({
         assert(false, `algo.covers.Line_Point : not implemented`);
     }; // covers.Line_Point
 
-    /** 
-     * @param {BBox} left 
-     * @param {Point} right 
-     * @returns {Boolean}
-     */
-    covers.BBox_Point = function (left, right) {
-        return left.min.x - tolerance <= right.x
-            && left.max.x + tolerance >= right.x
-            && left.min.y - tolerance <= right.y
-            && left.max.y + tolerance >= right.y;
-    }; // covers.BBox_Point
-
     return Object.freeze(covers);
 
 }; // module.exports
