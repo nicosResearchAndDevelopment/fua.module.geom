@@ -1,7 +1,7 @@
 module.exports = ({
     geom, algo, util: {
         $name, $name_tag, $species, $coord_species, $min_size, $max_size, $coords, $locked,
-        assert, lockProp, isFloat, isGeometry, isPoint, isMultiPoint
+        assert, lockProp, isFloat, isGeometry, isPoint, isMultiPoint, isGeometryCollection
     }
 }) => {
 
@@ -36,49 +36,33 @@ module.exports = ({
         set z(value) { if (!this[$locked] && isFloat(value) && this[$coords].length > 2) this[$coords][2] = value; }
 
         /**
-         * @param {Point} point 
+         * @param {Point} that 
          * @returns {Line}
          */
-        lineTo(point) {
-            if (this[$cached_lines].has(point)) {
-                return this[$cached_lines].get(point);
-            } else {
-                const line = new geom.Line(this, point);
-                this[$cached_lines].set(point, line);
-                return line;
+        lineTo(that) {
+            let result = this[$cached_lines].get(that);
+
+            if (!result) {
+                result = new geom.Line(this, that);
+                this[$cached_lines].set(that, result);
             }
+
+            return result;
         } // Point#lineTo
 
         equals(that) {
             assert(isGeometry(that), `${this[$name_tag]}#equals : invalid @param {Geometry} that`);
-            if (this === that) return true;
+            let result;
 
-            if (isPoint(that)) {
-                return algo.PointEquality(this, that);
-            } else {
-                return that.equals(this);
-            }
+            if (isPoint(that))
+                result = algo.equals.Point_Point(this, that);
+            else if (isMultiPoint(that) || isGeometryCollection(that))
+                result = that.equals(this);
+            else
+                result = false;
+
+            return result;
         } // Point#equals
-
-        contains(that) {
-            assert(isGeometry(that), `${this[$name_tag]}#contains : invalid @param {Geometry} that`);
-            return that.equals(this);
-        } // Point#contains
-
-        intersects(that) {
-            assert(isGeometry(that), `${this[$name_tag]}#intersects : invalid @param {Geometry} that`);
-            return that.contains(this);
-        } // Point#intersects
-
-        overlaps(that) {
-            assert(isGeometry(that), `${this[$name_tag]}#overlaps : invalid @param {Geometry} that`);
-            return that.overlaps(this);
-        } // Point#overlaps
-
-        touches(that) {
-            assert(isGeometry(that), `${this[$name_tag]}#touches : invalid @param {Geometry} that`);
-            return that.touches(this);
-        } // Point#touches
 
     } // Point
 

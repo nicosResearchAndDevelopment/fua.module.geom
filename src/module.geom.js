@@ -1,15 +1,14 @@
 const
     initConfig = require('./config.js'),
-    initPublic = require('./public.js'),
-    initUtility = require('./util.js'),
-    initAlgorithms = require('./algorithms.js'),
-    // initEquals = require('./algorithms/equals.js'),
-    // initIntersects = require('./algorithms/intersects.js'),
-    // initTouches = require('./algorithms/touches.js'),
-    // initContains = require('./algorithms/contains.js'),
-    // initOverlaps = require('./algorithms/overlaps.js'),
-    // initCovers = require('./algorithms/covers.js'),
-    // initCrosses = require('./algorithms/crosses.js'),
+    initExport = require('./export.js'),
+    initUtility = require('./utility.js'),
+    initEquals = require('./algorithms/equals.js'),
+    initIntersects = require('./algorithms/intersects.js'),
+    initTouches = require('./algorithms/touches.js'),
+    initContains = require('./algorithms/contains.js'),
+    initOverlaps = require('./algorithms/overlaps.js'),
+    initCovers = require('./algorithms/covers.js'),
+    initCrosses = require('./algorithms/crosses.js'),
     initGeometry = require('./geometries/Geometry.js'),
     initPoint = require('./geometries/Point.js'),
     initBBox = require('./geometries/BBox.js'),
@@ -28,34 +27,34 @@ module.exports = ({
 } = {}) => {
 
     const
-        geom = {}, // algo = {},
+        geom = {}, algo = {},
         conf = initConfig(config),
         util = initUtility({ geom, conf, hrt }),
-        algo = initAlgorithms({ geom, conf, util });
+        param = Object.freeze({ geom, algo, conf, util });
 
-    // algo.equals = initEquals({ algo, conf, util });
-    // algo.intersects = initIntersects({ algo, conf, util });
-    // algo.touches = initTouches({ algo, conf, util });
-    // algo.contains = initContains({ algo, conf, util });
-    // algo.overlaps = initOverlaps({ algo, conf, util });
-    // algo.covers = initCovers({ algo, conf, util });
-    // algo.crosses = initCrosses({ algo, conf, util });
-    // Object.freeze(algo);
+    algo.equals = initEquals(param);
+    algo.intersects = initIntersects(param);
+    algo.touches = initTouches(param);
+    algo.contains = initContains(param);
+    algo.overlaps = initOverlaps(param);
+    algo.covers = initCovers(param);
+    algo.crosses = initCrosses(param);
+    Object.freeze(algo);
 
-    geom.Geometry = initGeometry({ geom, conf, util });
-    geom.Point = initPoint({ geom, algo, util });
-    geom.BBox = initBBox({ geom, algo, util });
-    geom.MultiPoint = initMultiPoint({ geom, algo, util });
-    geom.Line = initLine({ geom, algo, util });
-    geom.LineString = initLineString({ geom, algo, util });
-    geom.MultiLineString = initMultiLineString({ geom, algo, util });
-    geom.LinearRing = initLinearRing({ geom, algo, util });
-    geom.Polygon = initPolygon({ geom, algo, util });
-    geom.MultiPolygon = initMultiPolygon({ geom, algo, util });
-    geom.GeometryCollection = initGeometryCollection({ geom, algo, util });
+    geom.Geometry = initGeometry(param);
+    geom.Point = initPoint(param);
+    geom.BBox = initBBox(param);
+    geom.MultiPoint = initMultiPoint(param);
+    geom.Line = initLine(param);
+    geom.LineString = initLineString(param);
+    geom.MultiLineString = initMultiLineString(param);
+    geom.LinearRing = initLinearRing(param);
+    geom.Polygon = initPolygon(param);
+    geom.MultiPolygon = initMultiPolygon(param);
+    geom.GeometryCollection = initGeometryCollection(param);
     Object.freeze(geom);
 
-    return initPublic({ geom });
+    return initExport(param);
 
 }; // module.exports
 
