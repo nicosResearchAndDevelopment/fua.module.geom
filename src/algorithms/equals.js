@@ -1,13 +1,13 @@
 module.exports = ({
-    algo, util: {
+    algo, conf: {
+        tolerance
+    }, util: {
         $species, $iterator, $name_tag, $coords, $coord_species, $min_size, $max_size,
         assert, isArray, isFloat, isGeometry, isPoint, isLine, isBBox
     }
 }) => {
 
-    const
-        tolerance = conf.tolerance,
-        equals = {};
+    const equals = {};
 
     /** 
      * @param {Point} left 
@@ -15,10 +15,10 @@ module.exports = ({
      * @returns {Boolean}
      */
     equals.Point_Point = function (left, right) {
-
-        // TODO
-        assert(false, `algo.equals.Point_Point : not implemented`);
-
+        return left.x - tolerance <= right.x
+            && left.x + tolerance >= right.x
+            && left.y - tolerance <= right.y
+            && left.y + tolerance >= right.y;
     }; // equals.Point_Point
 
     /** 

@@ -33,7 +33,14 @@ module.exports = ({
         util = initUtility({ geom, conf, hrt }),
         algo = initAlgorithms({ geom, conf, util });
 
-    // algo.equals = initEquals({ algo, util });
+    // algo.equals = initEquals({ algo, conf, util });
+    // algo.intersects = initIntersects({ algo, conf, util });
+    // algo.touches = initTouches({ algo, conf, util });
+    // algo.contains = initContains({ algo, conf, util });
+    // algo.overlaps = initOverlaps({ algo, conf, util });
+    // algo.covers = initCovers({ algo, conf, util });
+    // algo.crosses = initCrosses({ algo, conf, util });
+    // Object.freeze(algo);
 
     geom.Geometry = initGeometry({ geom, conf, util });
     geom.Point = initPoint({ geom, algo, util });
@@ -46,6 +53,7 @@ module.exports = ({
     geom.Polygon = initPolygon({ geom, algo, util });
     geom.MultiPolygon = initMultiPolygon({ geom, algo, util });
     geom.GeometryCollection = initGeometryCollection({ geom, algo, util });
+    Object.freeze(geom);
 
     return initPublic({ geom });
 
