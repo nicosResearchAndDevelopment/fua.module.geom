@@ -64,6 +64,43 @@ module.exports = ({
             return result;
         } // Point#equals
 
+        contains(that) {
+            assert(isGeometry(that), `${this[$name_tag]}#contains : invalid @param {Geometry} that`);
+            return false;
+        } // Point#contains
+
+        covers(that) {
+            return this.equals(that);
+        } // Point#covers
+
+        intersects(that) {
+            assert(isGeometry(that), `${this[$name_tag]}#intersects : invalid @param {Geometry} that`);
+            let result;
+
+            if (isPoint(that))
+                result = algo.equals.Point_Point(this, that);
+            else
+                result = that.covers(this);
+
+            return result;
+        } // Point#intersects
+
+        overlaps(that) {
+            return this.equals(that);
+        } // Point#overlaps
+
+        crosses(that) {
+            assert(isGeometry(that), `${this[$name_tag]}#intersects : invalid @param {Geometry} that`);
+            let result;
+
+            if (isPoint(that) || isMultiPoint(that))
+                result = false;
+            else
+                result = that.covers(this);
+
+            return result;
+        } // Point#crosses
+
     } // Point
 
     return Point;
