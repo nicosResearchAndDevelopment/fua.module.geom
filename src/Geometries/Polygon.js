@@ -16,6 +16,8 @@ module.exports = ({
             assert(isGeometry(that), `${this[$name_tag]}#equals : invalid @param {Geometry} that`);
             let result;
 
+            if (this === that)
+                result = true;
             if (isPolygon(that))
                 result = algo.equals.Polygon_Polygon(this, that);
             else if (isMultiPolygon(that) || isGeometryCollection(that))

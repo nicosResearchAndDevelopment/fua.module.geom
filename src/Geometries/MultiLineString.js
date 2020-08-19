@@ -12,12 +12,6 @@ module.exports = ({
         static get [$coord_species]() { return geom.LineString; }
         static get [$unique_coords]() { return true; }
 
-        // equals(that) {
-        //     assert(isGeometry(that), `${this[$name_tag]}#equals : invalid @param {Geometry} that`);
-        //     if (this === that) return true;
-        //     return super.equals(that); // TODO
-        // } // MultiLineString#equals
-
     } // MultiLineString
 
     return MultiLineString;

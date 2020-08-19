@@ -24,62 +24,73 @@ module.exports = ({
             assert(isGeometry(that), `${this[$name_tag]}#equals : invalid @param {Geometry} that`);
             let result;
 
+            if (this === that)
+                result = true;
+            if (isPoint(that))
+                result = false;
             if (isLine(that))
                 result = algo.equals.Line_Line(this, that);
-            else if (isLineString(that) || isMultiLineString(that) || isGeometryCollection(that))
-                result = that.equals(this);
             else
-                result = false;
+                result = super.equals(that);
 
             return result;
         } // Line#equals
 
-        // contains(that) {
-        //     assert(isGeometry(that), `${this[$name_tag]}#contains : invalid @param {Geometry} that`);
+        contains(that) {
+            assert(isGeometry(that), `${this[$name_tag]}#contains : invalid @param {Geometry} that`);
+            let result;
 
-        //     if (isPoint(that)) {
-        //         return algo.LineContainment(this, that);
-        //     } else if (isLine(that)) {
-        //         return algo.LineContainment(this, that.from) && algo.LineContainment(this, that.to);
-        //     } else {
-        //         return super.contains(that);
-        //     }
-        // } // Line#contains
+            if (isPoint(that))
+                result = algo.contains.Line_Point(this, that);
+            else if (isLine(that))
+                result = algo.contains.Line_Point(this, that.from) && algo.contains.Line_Point(this, that.to);
+            else
+                result = super.contains(that);
 
-        // intersects(that) {
-        //     assert(isGeometry(that), `${this[$name_tag]}#intersects : invalid @param {Geometry} that`);
+            return result;
+        } // Line#contains
 
-        //     if (isPoint(that)) {
-        //         return algo.LineContainment(this, that);
-        //     } else if (isLine(that)) {
-        //         return algo.LineIntersection(this, that);
-        //     } else {
-        //         return super.intersects(that);
-        //     }
-        // } // Line#intersects
+        covers(that) {
+            assert(isGeometry(that), `${this[$name_tag]}#covers : invalid @param {Geometry} that`);
+            let result;
 
-        // overlaps(that) {
-        //     assert(isGeometry(that), `${this[$name_tag]}#overlaps : invalid @param {Geometry} that`);
+            if (isPoint(that))
+                result = algo.covers.Line_Point(this, that);
+            else if (isLine(that))
+                result = algo.covers.Line_Point(this, that.from) && algo.covers.Line_Point(this, that.to);
+            else
+                result = super.covers(that);
 
-        //     if (isPoint(that)) {
-        //         return algo.LineContainment(this, that);
-        //     } else if (isLine(that)) {
-        //         if (this.contains(that.from)) {
-        //             return this.contains(that.to)
-        //                 || that.contains(this.from)
-        //                 || that.contains(this.to);
-        //         } else if (this.contains(that.to)) {
-        //             return that.contains(this.from)
-        //                 || that.contains(this.to);
-        //         } else if (that.contains(this.from)) {
-        //             return that.contains(this.to);
-        //         } else {
-        //             return false;
-        //         }
-        //     } else {
-        //         return super.overlaps(that);
-        //     }
-        // } // Line#overlaps
+            return result;
+        } // Line#covers
+
+        intersects(that) {
+            assert(isGeometry(that), `${this[$name_tag]}#intersects : invalid @param {Geometry} that`);
+            let result;
+
+            if (isPoint(that))
+                result = algo.covers.Line_Point(this, that);
+            else if (isLine(that))
+                result = algo.intersects.Line_Line(this, that);
+            else
+                result = super.intersects(that);
+
+            return result;
+        } // Line#intersects
+
+        overlaps(that) {
+            assert(isGeometry(that), `${this[$name_tag]}#overlaps : invalid @param {Geometry} that`);
+            let result;
+
+            if (isPoint(that))
+                result = false;
+            else if (isLine(that))
+                result = algo.overlaps.Line_Line(this, that);
+            else
+                result = super.overlaps(that);
+
+            return result;
+        } // Line#overlaps
 
     } // Line
 

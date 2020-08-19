@@ -12,45 +12,63 @@ module.exports = ({
         static get [$coord_species]() { return geom.Point; }
         static get [$min_size]() { return 2; }
 
-        // equals(that) {
-        //     assert(isGeometry(that), `${this[$name_tag]}#equals : invalid @param {Geometry} that`);
-        //     if (this === that) return true;
-        //     return super.equals(that); // TODO
-        // } // LineString#equals
+        toLineArray() {
+            return this[$coords].slice(1).map(
+                (endPoint, startIndex) => this[$coords][startIndex].lineTo(endPoint)
+            );
+        } // LineString#toLineArray
 
-        // contains(that) {
-        //     assert(isGeometry(that), `${this[$name_tag]}#contains : invalid @param {Geometry} that`);
-        //     if (isPoint(that)) {
-        //         for (let i = 1; i < this.size; i++) {
-        //             if (this[$coords][i - 1].lineTo(this[$coords][i]).contains(that))
-        //                 return true;
-        //         }
-        //         return false;
-        //     } else {
-        //         return super.contains(that); // TODO
-        //     }
-        // } // LineString#contains
+        intersects(that) {
+            assert(isGeometry(that), `${this[$name_tag]}#intersects : invalid @param {Geometry} that`);
+            let result;
 
-        // intersects(that) {
-        //     assert(isGeometry(that), `${this[$name_tag]}#intersects : invalid @param {Geometry} that`);
-        //     if (isPoint(that)) {
-        //         return this.contains(that);
-        //     } else if (isLine(that)) {
-        //         for (let i = 1; i < this.size; i++) {
-        //             if (this[$coords][i - 1].lineTo(this[$coords][i]).intersects(that))
-        //                 return true;
-        //         }
-        //         return false;
-        //     } else if (isLineString(that)) {
-        //         for (let i = 1; i < this.size; i++) {
-        //             if (that.intersects(this[$coords][i - 1].lineTo(this[$coords][i])))
-        //                 return true;
-        //         }
-        //         return false;
-        //     } else {
-        //         return that.intersects(this);
-        //     }
-        // } // LineString#intersects
+            if (isPoint(that) || isLine(that)) {
+                result = this.toLineArray().some(line => line.intersects(that));
+                // result = false;
+                // for (let i = 1; i < this.size; i++) {
+                //     const line = this[$coords][i - 1].lineTo(this[$coords][i]);
+                //     if (line.intersects(that)) {
+                //         result = true;
+                //         break;
+                //     }
+                // }
+            } else if (isLineString(that)) {
+                result = this.toLineArray().some(line => that.intersects(line));
+                // result = false;
+                // for (let j = 1; j < that.size; j++) {
+                //     const line = that[$coords][j - 1].lineTo(that[$coords][j]);
+                //     if (this.intersects(line)) {
+                //         result = true;
+                //         break;
+                //     }
+                // }
+            } else {
+                result = super.intersects(that);
+            }
+
+            return result;
+        } // LineString#intersects
+
+        covers(that) {
+            assert(isGeometry(that), `${this[$name_tag]}#intersects : invalid @param {Geometry} that`);
+            let result;
+
+            if (isPoint(that)) {
+                result = this.toLineArray().some(line => line.covers(that));
+                // result = false;
+                // for (let i = 1; i < this.size; i++) {
+                //     const line = this[$coords][i - 1].lineTo(this[$coords][i]);
+                //     if (line.covers(that)) {
+                //         result = true;
+                //         break;
+                //     }
+                // }
+            } else {
+                result = super.covers(that);
+            }
+
+            return result;
+        } // LineString#covers
 
     } // LineString
 

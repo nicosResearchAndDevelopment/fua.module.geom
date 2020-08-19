@@ -24,30 +24,6 @@ module.exports = ({
         assert(false, `algo.contains.Line_Point : not implemented`);
     }; // contains.Line_Point
 
-    /** 
-     * @param {BBox} left 
-     * @param {Point} right 
-     * @returns {Boolean}
-     */
-    contains.BBox_Point = function (left, right) {
-        return left.min.x <= right.x
-            && left.max.x >= right.x
-            && left.min.y <= right.y
-            && left.max.y >= right.y;
-    }; // contains.BBox_Point
-
-    /** 
-     * @param {BBox} left 
-     * @param {BBox} right 
-     * @returns {Boolean}
-     */
-    contains.BBox_BBox = function (left, right) {
-        return left.min.x <= right.min.x
-            && left.max.x >= right.max.x
-            && left.min.y <= right.min.y
-            && left.max.y >= right.max.y;
-    }; // contains.BBox_BBox
-
     return Object.freeze(contains);
 
 }; // module.exports

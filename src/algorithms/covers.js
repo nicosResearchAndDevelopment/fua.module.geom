@@ -24,6 +24,30 @@ module.exports = ({
         assert(false, `algo.covers.Line_Point : not implemented`);
     }; // covers.Line_Point
 
+    /** 
+     * @param {BBox} left 
+     * @param {Point} right 
+     * @returns {Boolean}
+     */
+    covers.BBox_Point = function (left, right) {
+        return left.min.x - tolerance <= right.x
+            && left.max.x + tolerance >= right.x
+            && left.min.y - tolerance <= right.y
+            && left.max.y + tolerance >= right.y;
+    }; // covers.BBox_Point
+
+    /** 
+     * @param {BBox} left 
+     * @param {BBox} right 
+     * @returns {Boolean}
+     */
+    covers.BBox_BBox = function (left, right) {
+        return left.min.x - tolerance <= right.min.x
+            && left.max.x + tolerance >= right.max.x
+            && left.min.y - tolerance <= right.min.y
+            && left.max.y + tolerance >= right.max.y;
+    }; // covers.BBox_BBox
+
     return Object.freeze(covers);
 
 }; // module.exports

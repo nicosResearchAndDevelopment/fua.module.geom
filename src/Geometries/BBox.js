@@ -61,20 +61,20 @@ module.exports = ({
             if (this[$locked]) return this;
             assert(isGeometry(that), `${this[$name_tag]}#include : invalid @param {Geometry} that`);
             if (isPoint(that)) {
-                this.min.x = Math.min(this.min.x, that.x + tolerance);
-                this.min.y = Math.min(this.min.y, that.y + tolerance);
-                this.max.x = Math.max(this.max.x, that.x - tolerance);
-                this.max.y = Math.max(this.max.y, that.y - tolerance);
+                this.min.x = Math.min(this.min.x, that.x);
+                this.min.y = Math.min(this.min.y, that.y);
+                this.max.x = Math.max(this.max.x, that.x);
+                this.max.y = Math.max(this.max.y, that.y);
             } else if (isLine(that)) {
-                this.min.x = Math.min(this.min.x, that.from.x + tolerance, that.to.x + tolerance);
-                this.min.y = Math.min(this.min.y, that.from.y + tolerance, that.to.y + tolerance);
-                this.max.x = Math.max(this.max.x, that.from.x - tolerance, that.to.x - tolerance);
-                this.max.y = Math.max(this.max.y, that.from.y - tolerance, that.to.y - tolerance);
+                this.min.x = Math.min(this.min.x, that.from.x, that.to.x);
+                this.min.y = Math.min(this.min.y, that.from.y, that.to.y);
+                this.max.x = Math.max(this.max.x, that.from.x, that.to.x);
+                this.max.y = Math.max(this.max.y, that.from.y, that.to.y);
             } else if (isMultiPoint(that) || isLineString(that)) {
-                this.min.x = Math.min(this.min.x, ...(that[$coords].map(coord => coord.x + tolerance)));
-                this.min.y = Math.min(this.min.y, ...(that[$coords].map(coord => coord.y + tolerance)));
-                this.max.x = Math.max(this.max.x, ...(that[$coords].map(coord => coord.x - tolerance)));
-                this.max.y = Math.max(this.max.y, ...(that[$coords].map(coord => coord.y - tolerance)));
+                this.min.x = Math.min(this.min.x, ...(that[$coords].map(coord => coord.x)));
+                this.min.y = Math.min(this.min.y, ...(that[$coords].map(coord => coord.y)));
+                this.max.x = Math.max(this.max.x, ...(that[$coords].map(coord => coord.x)));
+                this.max.y = Math.max(this.max.y, ...(that[$coords].map(coord => coord.y)));
             } else if (isBBox(that)) {
                 this.min.x = Math.min(this.min.x, that.min.x);
                 this.min.y = Math.min(this.min.y, that.min.y);
@@ -88,49 +88,20 @@ module.exports = ({
             return this;
         } // BBox#include
 
-        contains(that) {
-            assert(isGeometry(that), `${this[$name_tag]}#contains : invalid @param {Geometry} that`);
+        covers(that) {
+            assert(isGeometry(that), `${this[$name_tag]}#covers : invalid @param {Geometry} that`);
             let result;
 
-            if (isPoint(that)) {
-                result = algo.contains.BBox_Point(this, that);
-            } else if (isBBox(that)) {
-                result = algo.contains.BBox_BBox(this, that);
-            } else {
-                for (let coord of that[$coords]) {
-                    if (!this.contains(coord)) {
-                        result = false;
-                        break;
-                    }
-                }
-                if (result === undefined)
-                    result = true;
-            }
+            if (isPoint(that))
+                result = algo.covers.BBox_Point(this, that);
+            else if (isBBox(that))
+                result = algo.covers.BBox_BBox(this, that);
+            else
+                result = that.size > 0
+                    && that[$coords].every(coord => this.covers(coord));
 
             return result;
-        } // BBox#contains
-
-        intersects(that) {
-            assert(isGeometry(that), `${this[$name_tag]}#intersects : invalid @param {Geometry} that`);
-            let result;
-
-            if (isPoint(that)) {
-                result = algo.contains.BBox_Point(this, that);
-            } if (isBBox(that)) {
-                result = algo.intersects.BBox_BBox(this, that);
-            } else {
-                for (let coord of that[$coords]) {
-                    if (this.intersects(coord)) {
-                        result = true;
-                        break;
-                    }
-                }
-                if (result === undefined)
-                    result = false;
-            }
-
-            return result;
-        } // BBox#intersects
+        } // BBox#covers
 
     } // BBox
 

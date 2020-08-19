@@ -20,8 +20,19 @@ module.exports = ({
      * @returns {Boolean}
      */
     overlaps.Line_Line = function (left, right) {
-        // TODO implement algo.overlaps.Line_Line
-        assert(false, `algo.overlaps.Line_Line : not implemented`);
+        return (
+            algo.contains.Line_Point(left, right.from)
+            && (algo.contains.Line_Point(left, right.to)
+                || algo.contains.Line_Point(right, left.from)
+                || algo.contains.Line_Point(right, left.to))
+        ) || (
+                algo.contains.Line_Point(left, right.to)
+                && (algo.contains.Line_Point(right, left.from)
+                    || algo.contains.Line_Point(right, left.to))
+            ) || (
+                algo.contains.Line_Point(right, left.from)
+                && algo.contains.Line_Point(right, left.to)
+            );
     }; // overlaps.Line_Line
 
     return Object.freeze(overlaps);

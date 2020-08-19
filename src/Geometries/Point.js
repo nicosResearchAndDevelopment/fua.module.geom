@@ -54,6 +54,8 @@ module.exports = ({
             assert(isGeometry(that), `${this[$name_tag]}#equals : invalid @param {Geometry} that`);
             let result;
 
+            if (this === that)
+                result = true;
             if (isPoint(that))
                 result = algo.equals.Point_Point(this, that);
             else if (isMultiPoint(that) || isGeometryCollection(that))
@@ -64,14 +66,9 @@ module.exports = ({
             return result;
         } // Point#equals
 
-        contains(that) {
-            assert(isGeometry(that), `${this[$name_tag]}#contains : invalid @param {Geometry} that`);
-            return false;
-        } // Point#contains
-
-        covers(that) {
-            return this.equals(that);
-        } // Point#covers
+        contains(that) { return this.equals(that); } // Point#contains
+        covers(that) { return this.equals(that); } // Point#covers
+        overlaps(that) { return this.equals(that); } // Point#overlaps
 
         intersects(that) {
             assert(isGeometry(that), `${this[$name_tag]}#intersects : invalid @param {Geometry} that`);
@@ -84,10 +81,6 @@ module.exports = ({
 
             return result;
         } // Point#intersects
-
-        overlaps(that) {
-            return this.equals(that);
-        } // Point#overlaps
 
         crosses(that) {
             assert(isGeometry(that), `${this[$name_tag]}#intersects : invalid @param {Geometry} that`);

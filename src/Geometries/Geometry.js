@@ -259,8 +259,9 @@ module.exports = ({
          * @returns {boolean}
          */
         equals(that) {
-            // assert(isGeometry(that), `${this[$name_tag]}#equals : invalid @param {Geometry} that`);
-            assert(false, `${this[$name_tag]}#equals : not implemented`);
+            assert(this.equals !== Geometry.prototype.equals, `${this[$name_tag]}#equals : @interface not implemented`);
+            assert(isGeometry(that), `${this[$name_tag]}#equals : invalid @param {Geometry} that`);
+            assert(false, `${this[$name_tag]}#equals : ${that[$name_tag]} not supported`);
         } // Geometry#equals
 
         /**
@@ -283,8 +284,9 @@ module.exports = ({
          * @returns {boolean}
          */
         intersects(that) {
-            // assert(isGeometry(that), `${this[$name_tag]}#intersects : invalid @param {Geometry} that`);
-            assert(false, `${this[$name_tag]}#intersects : not implemented`);
+            assert(this.intersects !== Geometry.prototype.intersects, `${this[$name_tag]}#intersects : @interface not implemented`);
+            assert(isGeometry(that), `${this[$name_tag]}#intersects : invalid @param {Geometry} that`);
+            assert(false, `${this[$name_tag]}#intersects : ${that[$name_tag]} not supported`);
         } // Geometry#intersects
 
         /**
@@ -296,8 +298,9 @@ module.exports = ({
          * @returns {boolean}
          */
         touches(that) {
-            // assert(isGeometry(that), `${this[$name_tag]}#touches : invalid @param {Geometry} that`);
-            assert(false, `${this[$name_tag]}#touches : not implemented`);
+            assert(this.touches !== Geometry.prototype.touches, `${this[$name_tag]}#touches : @interface not implemented`);
+            assert(isGeometry(that), `${this[$name_tag]}#touches : invalid @param {Geometry} that`);
+            assert(false, `${this[$name_tag]}#touches : ${that[$name_tag]} not supported`);
         } // Geometry#touches
 
         meets(that) {
@@ -314,8 +317,9 @@ module.exports = ({
          * @returns {boolean}
          */
         contains(that) {
-            // assert(isGeometry(that), `${this[$name_tag]}#contains : invalid @param {Geometry} that`);
-            assert(false, `${this[$name_tag]}#contains : not implemented`);
+            assert(this.contains !== Geometry.prototype.contains, `${this[$name_tag]}#contains : @interface not implemented`);
+            assert(isGeometry(that), `${this[$name_tag]}#contains : invalid @param {Geometry} that`);
+            assert(false, `${this[$name_tag]}#contains : ${that[$name_tag]} not supported`);
         } // Geometry#contains
 
         /**
@@ -327,8 +331,9 @@ module.exports = ({
          * @returns {boolean}
          */
         overlaps(that) {
-            // assert(isGeometry(that), `${this[$name_tag]}#overlaps : invalid @param {Geometry} that`);
-            assert(false, `${this[$name_tag]}#overlaps : not implemented`);
+            assert(this.overlaps !== Geometry.prototype.overlaps, `${this[$name_tag]}#overlaps : @interface not implemented`);
+            assert(isGeometry(that), `${this[$name_tag]}#overlaps : invalid @param {Geometry} that`);
+            assert(false, `${this[$name_tag]}#overlaps : ${that[$name_tag]} not supported`);
         } // Geometry#overlaps
 
         /**
@@ -340,8 +345,9 @@ module.exports = ({
          * @returns {boolean}
          */
         covers(that) {
-            // assert(isGeometry(that), `${this[$name_tag]}#covers : invalid @param {Geometry} that`);
-            assert(false, `${this[$name_tag]}#covers : not implemented`);
+            assert(this.covers !== Geometry.prototype.covers, `${this[$name_tag]}#covers : @interface not implemented`);
+            assert(isGeometry(that), `${this[$name_tag]}#covers : invalid @param {Geometry} that`);
+            assert(false, `${this[$name_tag]}#covers : ${that[$name_tag]} not supported`);
         } // Geometry#covers
 
         /**
@@ -384,8 +390,9 @@ module.exports = ({
          * @returns {boolean}
          */
         crosses(that) {
-            // assert(isGeometry(that), `${this[$name_tag]}#crosses : invalid @param {Geometry} that`);
-            assert(false, `${this[$name_tag]}#crosses : not implemented`);
+            assert(this.crosses !== Geometry.prototype.crosses, `${this[$name_tag]}#crosses : @interface not implemented`);
+            assert(isGeometry(that), `${this[$name_tag]}#crosses : invalid @param {Geometry} that`);
+            assert(false, `${this[$name_tag]}#crosses : ${that[$name_tag]} not supported`);
         } // Geometry#crosses
 
     } // Geometry
