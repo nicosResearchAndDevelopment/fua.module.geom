@@ -15,7 +15,8 @@ const line_string = new LineString(point, new Point(2, 2));
 console.log("multi_point.bbox.covers:", line_string.coordinates(), multi_point.bbox().covers(line_string));
 line_string.add(new Point(3, 0));
 console.log("multi_point.bbox.covers:", line_string.coordinates(), multi_point.bbox().covers(line_string));
-// console.log("line.intersects:", (new Point(0, 0)).lineTo(new Point(1, 1)).intersects((new Point(0, .1)).lineTo(new Point(1, 1.1))));
+console.log("line.intersects:", (new Point(0, 0)).lineTo(new Point(1, 1)).intersects((new Point(0, 1)).lineTo(new Point(1, 0))));
+// console.log("line.intersects false:", (new Point(0, 0)).lineTo(new Point(1, 1)).intersects((new Point(0, .1)).lineTo(new Point(1, 1.1))));
 const polygon = Polygon.from([
     [[0, 0], [3, 0], [3, 3], [0, 3], [0, 0]],
     [[1, 1], [1, 2], [2, 2], [2, 1], [1, 1]]
