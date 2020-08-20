@@ -28,6 +28,13 @@ module.exports = ({
             return result;
         } // Polygon#equals
 
+        testPoint(that) {
+            // TODO temp
+            assert(isPoint(that), `${this[$name_tag]}#testPoint : invalid @param {Point} that`);
+            let result = this[$coords].map(coord => coord.testPoint(that));
+            return result;
+        }
+
         // contains(that) {
         //     assert(isGeometry(that), `${this[$name_tag]}#contains : invalid @param {Geometry} that`);
 

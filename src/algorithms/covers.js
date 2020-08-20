@@ -20,8 +20,46 @@ module.exports = ({
      * @returns {Boolean}
      */
     covers.Line_Point = function (left, right) {
-        // TODO implement algo.covers.Line_Point
-        assert(false, `algo.covers.Line_Point : not implemented`);
+
+        const
+            // L[x,y]: the start of the left line 
+            Lx = left.from.x, Ly = left.from.y,
+            // l[x,y]: the direction vector of the left line 
+            lx = left.to.x - Lx, ly = left.to.y - Ly,
+            // R[x,y]: the right point
+            Rx = right.x, Ry = right.y,
+            // t[x,y]: the factor of l[x,y] to reach R[x,y]
+            tx = (Rx - Lx) / lx, ty = (Ry - Ly) / ly,
+            // e[x,y]: the epsilon tolerance for t[x,y]
+            ex = 2 * tolerance / Math.abs(lx), ey = 2 * tolerance / Math.abs(ly);
+
+        // for a point on a line, tx and ty should be (nearly) equal
+        if (tx + ex < ty - ey || tx - ex > ty + ey)
+            return false;
+
+        const
+            // lt: the mean of the factor of l to reach R
+            lt = (tx + ty) / 2,
+            // le: the epsilon tolerance for lt
+            le = 2 * tolerance / ((Math.abs(lx) + Math.abs(ly)) / 2);
+
+        // for a point on a line, lt should be (nearly) between 0 and 1
+        if (lt < -le || lt > 1 + le) return false;
+        // 0 meaning: R should be equal to L
+        if (lt <= 0) return algo.equals.Point_Point(left.from, right);
+        // 1 meaning: R should be equal to L+l
+        if (lt >= 1) return algo.equals.Point_Point(left.to, right);
+
+        const
+            // P[x,y]: nearest point to R[x,y] on the line
+            Px = Lx + lt * lx, Py = Ly + lt * ly;
+
+        // now return position equality for R and P
+        return Rx - tolerance <= Px
+            && Rx + tolerance >= Px
+            && Ry - tolerance <= Py
+            && Ry + tolerance >= Py;
+
     }; // covers.Line_Point
 
     /** 

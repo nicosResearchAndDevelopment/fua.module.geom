@@ -1,7 +1,7 @@
 module.exports = ({
     geom, algo, util: {
         $name, $name_tag, $species, $coord_species, $min_size, $coords,
-        assert, lockProp,
+        assert, lockProp, isPoint
     }
 }) => {
 
@@ -19,6 +19,29 @@ module.exports = ({
             assert(this[$coords][0].equals(this[$coords][this.size - 1]));
             this[$coords][this.size - 1] = this[$coords][0];
         } // LinearRing#constructor
+
+        testPoint(that) {
+            // TODO temp
+            assert(isPoint(that), `${this[$name_tag]}#testPoint : invalid @param {Point} that`);
+            let result = "";
+            const check_line = that.lineTo(this.bbox(true).max);
+            const ax = check_line.to.x - check_line.from.x;
+            const ay = check_line.to.y - check_line.from.y;
+            for (let i = 1; i < this.size; i++) {
+                const line = this[$coords][i - 1].lineTo(this[$coords][i]);
+                if (line.intersects(check_line)) {
+                    const bx = line.to.x - line.from.x;
+                    const by = line.to.y - line.from.y;
+                    const indicator = Math.sign(ax * by - ay * bx);
+                    if (indicator > 0) result += "+";
+                    if (indicator < 0) result += "-";
+                }
+            }
+            return result
+                .replace(/\+\+/g, "+")
+                .replace(/--/g, "-")
+                .replace(/\+-|-\+/g, "");
+        }
 
         add(coord) {
             if (super.add(coord)) {
