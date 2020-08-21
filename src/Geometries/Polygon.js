@@ -32,7 +32,7 @@ module.exports = ({
             // TODO temp
             assert(isPoint(from) && isPoint(to), `${this[$name_tag]}#testPoint : invalid @param {Point} from/to`);
             let result = this[$coords].map(coord => coord.testPoint(from, to));
-            return result;
+            return `( ${result.join(" | ")} )`;
         }
 
         // contains(that) {

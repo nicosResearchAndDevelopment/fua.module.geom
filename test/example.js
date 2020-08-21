@@ -26,21 +26,24 @@ const polygon = Polygon.from([
     [[1, 1], [1, 2], [2, 2], [2, 1], [1, 1]]
 ]);
 for (let check_point of [
-    new Point(0, 0),
-    new Point(-1, -1),
-    new Point(5, 2),
-    new Point(2, 5)
+    Point.from([-1, -1]),
+    Point.from([0, 0]),
+    Point.from([3, 3]),
+    Point.from([4, 4]),
+    Point.from([0, 5]),
+    Point.from([2.5, 0])
 ]) {
-    console.log(
-        `polygon.testPoint (check ${check_point.x} ${check_point.y}):`,
-        polygon.testPoint(Point.from([.5, .5]), check_point),
-        polygon.testPoint(Point.from([1.5, 1.5]), check_point),
-        polygon.testPoint(Point.from([1, 2]), check_point),
-        polygon.testPoint(Point.from([3, 3]), check_point),
-        polygon.testPoint(Point.from([4, 3.5]), check_point),
-        polygon.testPoint(Point.from([-1, -1]), check_point),
-        polygon.testPoint(Point.from([0, 0]), check_point)
-    );
+    console.log([
+        `polygon.testPoint [${check_point.x} ${check_point.y}]:`,
+        `> [.5, .5]: ` + polygon.testPoint(Point.from([.5, .5]), check_point),
+        `> [2, 2]: ` + polygon.testPoint(Point.from([2, 2]), check_point),
+        `> [2.6, 1.8]: ` + polygon.testPoint(Point.from([2.6, 1.8]), check_point),
+        `> [1, 3]: ` + polygon.testPoint(Point.from([1, 3]), check_point),
+        `> [1.5, 1.5]: ` + polygon.testPoint(Point.from([1.5, 1.5]), check_point),
+        `> [-1, -1]: ` + polygon.testPoint(Point.from([-1, -1]), check_point),
+        `> [4, 1]: ` + polygon.testPoint(Point.from([4, 1]), check_point),
+        `> [0, 0]: ` + polygon.testPoint(Point.from([0, 0]), check_point)
+    ].join("\n"));
 }
 // console.log("polygon.contains:", polygon.contains(Point.from([.5, .5])));
 // console.log("polygon.contains false:", polygon.contains(Point.from([1.5, 1.5])));

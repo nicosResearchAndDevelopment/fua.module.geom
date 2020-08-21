@@ -20,9 +20,10 @@ describe("a LineString should", () => {
 
     const line = LineString.from([[0, 0], [1, 1], [1, 0], [2, 0]]);
 
-    test("intersect another LineString, if some their lines cross", () => {
-        expect(line.intersects(LineString.from([[0, 1], [.9, .1]]))).toBeTruthy;
-        expect(line.intersects(LineString.from([[0, 1], [2, 1]]))).toBeTruthy;
+    test("intersect another LineString, if some of their lines cross", () => {
+        expect(line.intersects(LineString.from([[0, 1], [.9, .1]]))).toBeTruthy();
+        expect(line.intersects(LineString.from([[0, 1], [2, 1]]))).toBeTruthy();
+        expect(line.intersects(LineString.from([[.1, 0], [.9, 0]]))).toBeFalsy();
     });
 
 });

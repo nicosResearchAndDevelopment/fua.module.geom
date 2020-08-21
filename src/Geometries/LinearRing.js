@@ -34,13 +34,16 @@ module.exports = ({
                     const by = line.to.y - line.from.y;
                     const indicator = Math.sign(ax * by - ay * bx);
                     if (indicator > 0) result += "+";
-                    if (indicator < 0) result += "-";
+                    else if (indicator < 0) result += "-";
+                    else result += "*";
+                } else {
+                    result += ".";
                 }
             }
-            result = result
-                .replace(/\+\+/g, "+")
-                .replace(/--/g, "-")
-                .replace(/\+-|-\+/g, "");
+            // result = result
+            //     .replace(/\+\+/g, "+")
+            //     .replace(/--/g, "-")
+            //     .replace(/\+-|-\+/g, "");
             return result;
         }
 
