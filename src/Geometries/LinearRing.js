@@ -20,11 +20,11 @@ module.exports = ({
             this[$coords][this.size - 1] = this[$coords][0];
         } // LinearRing#constructor
 
-        testPoint(that) {
+        testPoint(from, to) {
             // TODO temp
-            assert(isPoint(that), `${this[$name_tag]}#testPoint : invalid @param {Point} that`);
+            assert(isPoint(from) && isPoint(to), `${this[$name_tag]}#testPoint : invalid @param {Point} from/to`);
             let result = "";
-            const check_line = that.lineTo(this.bbox(true).max);
+            const check_line = from.lineTo(to);
             const ax = check_line.to.x - check_line.from.x;
             const ay = check_line.to.y - check_line.from.y;
             for (let i = 1; i < this.size; i++) {
@@ -37,10 +37,11 @@ module.exports = ({
                     if (indicator < 0) result += "-";
                 }
             }
-            return result
+            result = result
                 .replace(/\+\+/g, "+")
                 .replace(/--/g, "-")
                 .replace(/\+-|-\+/g, "");
+            return result;
         }
 
         add(coord) {

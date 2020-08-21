@@ -25,14 +25,23 @@ const polygon = Polygon.from([
     [[0, 0], [3, 0], [3, 3], [0, 3], [0, 0]],
     [[1, 1], [1, 2], [2, 2], [2, 1], [1, 1]]
 ]);
-console.log(
-    "polygon.testPoint:",
-    polygon.testPoint(Point.from([.5, .5])),
-    polygon.testPoint(Point.from([1.5, 1.5])),
-    polygon.testPoint(Point.from([1, 2])),
-    polygon.testPoint(Point.from([3, 3])),
-    polygon.testPoint(Point.from([4, 3]))
-);
+for (let check_point of [
+    new Point(0, 0),
+    new Point(-1, -1),
+    new Point(5, 2),
+    new Point(2, 5)
+]) {
+    console.log(
+        `polygon.testPoint (check ${check_point.x} ${check_point.y}):`,
+        polygon.testPoint(Point.from([.5, .5]), check_point),
+        polygon.testPoint(Point.from([1.5, 1.5]), check_point),
+        polygon.testPoint(Point.from([1, 2]), check_point),
+        polygon.testPoint(Point.from([3, 3]), check_point),
+        polygon.testPoint(Point.from([4, 3.5]), check_point),
+        polygon.testPoint(Point.from([-1, -1]), check_point),
+        polygon.testPoint(Point.from([0, 0]), check_point)
+    );
+}
 // console.log("polygon.contains:", polygon.contains(Point.from([.5, .5])));
 // console.log("polygon.contains false:", polygon.contains(Point.from([1.5, 1.5])));
 
