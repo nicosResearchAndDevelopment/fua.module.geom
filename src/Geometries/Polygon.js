@@ -32,7 +32,13 @@ module.exports = ({
             // TODO temp
             assert(isPoint(from) && isPoint(to), `${this[$name_tag]}#testPoint : invalid @param {Point} from/to`);
             let result = this[$coords].map(coord => coord.testPoint(from, to));
-            return `( ${result.join(" | ")} )`;
+            if (result.some(char => char === "B")) {
+                return "Boundary";
+            } else if (result[0] === "L" && result.every(char => char !== "R")) {
+                return "Interior";
+            } else {
+                return "Exterior";
+            }
         }
 
         // contains(that) {
@@ -61,6 +67,18 @@ module.exports = ({
         //         return super.contains(that); // TODO
         //     }
         // } // Polygon#contains
+
+        covers(that) {
+            assert(isGeometry(that), `${this[$name_tag]}#equals : invalid @param {Geometry} that`);
+            let result;
+
+            if (isPoint(that))
+                result = algo.covers.Polygon_Point(this, that);
+            else
+                super.covers(that);
+
+            return result;
+        } // Polygon#covers
 
     } // Polygon
 

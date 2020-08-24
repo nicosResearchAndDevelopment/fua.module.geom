@@ -21,31 +21,34 @@ const { Geometry, Point, MultiPoint, LineString, MultiLineString, Polygon, Multi
 // console.log("line.intersects:", (new Point(0, 0)).lineTo(new Point(1, 1)).intersects((new Point(0, 1)).lineTo(new Point(1, 0))));
 // console.log("line.intersects false:", (new Point(0, 0)).lineTo(new Point(1, 1)).intersects((new Point(0, .1)).lineTo(new Point(1, 1.1))));
 
+// console.log(
+//     (new geom.Point(0, 0))
+//         .lineTo(new geom.Point(3, 0))
+//         .covers(new geom.Point(2, 0)),
+//     (new geom.Point(0, 0))
+//         .lineTo(new geom.Point(3, 3))
+//         .covers(new geom.Point(2, 2))
+// );
+// debugger;
+
 const polygon = Polygon.from([
     [[0, 0], [3, 0], [3, 3], [0, 3], [0, 0]],
     [[1, 1], [1, 2], [2, 2], [2, 1], [1, 1]]
 ]);
-for (let check_point of [
-    Point.from([-1, -1]),
-    Point.from([0, 0]),
-    Point.from([3, 3]),
-    Point.from([4, 4]),
-    Point.from([0, 5]),
-    Point.from([2.5, 0])
-]) {
-    console.log([
-        `polygon.testPoint [${check_point.x} ${check_point.y}]:`,
-        `> [.5, .5]: ` + polygon.testPoint(Point.from([.5, .5]), check_point),
-        `> [2, 2]: ` + polygon.testPoint(Point.from([2, 2]), check_point),
-        `> [2.6, 1.8]: ` + polygon.testPoint(Point.from([2.6, 1.8]), check_point),
-        `> [1, 3]: ` + polygon.testPoint(Point.from([1, 3]), check_point),
-        `> [1.5, 1.5]: ` + polygon.testPoint(Point.from([1.5, 1.5]), check_point),
-        `> [-1, -1]: ` + polygon.testPoint(Point.from([-1, -1]), check_point),
-        `> [4, 1]: ` + polygon.testPoint(Point.from([4, 1]), check_point),
-        `> [0, 0]: ` + polygon.testPoint(Point.from([0, 0]), check_point)
-    ].join("\n"));
-}
-// console.log("polygon.contains:", polygon.contains(Point.from([.5, .5])));
-// console.log("polygon.contains false:", polygon.contains(Point.from([1.5, 1.5])));
+
+console.log([
+    `polygon.covers:`,
+    `> [.5, .5]: ` + polygon.covers(Point.from([.5, .5])) + ` -> interior`,
+    `> [2, 2]: ` + polygon.covers(Point.from([2, 2])) + ` -> boundary`,
+    `> [2.6, 1.8]: ` + polygon.covers(Point.from([2.6, 1.8])) + ` -> interior`,
+    `> [1, 3]: ` + polygon.covers(Point.from([1, 3])) + ` -> boundary`,
+    `> [1.5, 1.5]: ` + polygon.covers(Point.from([1.5, 1.5])) + ` -> exterior`,
+    `> [-1, -1]: ` + polygon.covers(Point.from([-1, -1])) + ` -> exterior`,
+    `> [4, 1]: ` + polygon.covers(Point.from([4, 1])) + ` -> exterior`,
+    `> [0, 0]: ` + polygon.covers(Point.from([0, 0])) + ` -> boundary`
+].join("\n"));
+
+// console.log("polygon.covers:", polygon.covers(Point.from([.5, .5])));
+// console.log("polygon.covers false:", polygon.covers(Point.from([1.5, 1.5])));
 
 debugger; process.exit(0);

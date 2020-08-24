@@ -2,7 +2,7 @@ module.exports = ({
     algo, conf: {
         tolerance
     }, util: {
-        $coords, assert
+        $coords, assert, isFloat
     }
 }) => {
 
@@ -39,7 +39,8 @@ module.exports = ({
 
         const
             // lt: the mean of the factor of l to reach R
-            lt = (tx + ty) / 2,
+            // lt = isFloat(tx) ? isFloat(ty) ? (tx + ty) / 2 : tx : ty,
+            lt = isNaN(tx) ? ty : isNaN(ty) ? tx : (tx + ty) / 2,
             // le: the epsilon tolerance for lt
             le = 2 * tolerance / ((Math.abs(lx) + Math.abs(ly)) / 2);
 
@@ -85,6 +86,65 @@ module.exports = ({
             && left.min.y - tolerance <= right.min.y
             && left.max.y + tolerance >= right.max.y;
     }; // covers.BBox_BBox
+
+    /** 
+     * @param {Polygon} left 
+     * @param {Point} right 
+     * @returns {Boolean}
+     */
+    covers.Polygon_Point = function (left, right) {
+        const
+            check_line = right.lineTo(left.bbox(true).max),
+            ax = check_line.to.x - check_line.from.x,
+            ay = check_line.to.y - check_line.from.y,
+            indicator_arr = [];
+
+        for (let linear_ring of left[$coords]) {
+            let indicator_str = "";
+
+            for (let line_segment of linear_ring.toLineArray()) {
+
+                if (line_segment.covers(right)) {
+                    indicator_str += "B";
+                } else if (line_segment.intersects(check_line)) {
+                    const
+                        bx = line_segment.to.x - line_segment.from.x,
+                        by = line_segment.to.y - line_segment.from.y,
+                        indicator = Math.sign(ax * by - ay * bx);
+
+                    if (indicator > 0) indicator_str += "L";
+                    else if (indicator < 0) indicator_str += "R";
+                    else indicator_str += "P";
+                } else {
+                    indicator_str += "_";
+                }
+
+            } // for every line_segment
+
+            indicator_str = indicator_str
+                // remove empty results
+                .replace(/_/g, "")
+                // boundary check
+                .replace(/^.*B.*$/, "B")
+                // reduce chained Ls or Rs to single character
+                .replace(/L[LP]*L/g, "L")
+                .replace(/R[RP]*R/g, "R")
+                .replace(/^[LP]*L(.*?)L[LP]*$/, (m, p) => "L" + p)
+                .replace(/^[RP]*R(.*?)R[RP]*$/, (m, p) => "R" + p)
+                // remove all RLs or LRs
+                .replace(/LP*R|RP*L/g, "");
+            //  .replace(/^[RP]*R(.*?)L[LP]*$/, (m, p) => p)
+            //  .replace(/^[LP]*L(.*?)R[RP]*$/, (m, p) => p)
+
+            assert(indicator_str.length <= 1, `algo.covers.Polygon_Point : unexpected indicator '${indicator_str}' of length > 1`);
+            indicator_arr.push(indicator_str);
+
+        } // for every linear_ring
+
+        return (indicator_arr[0] === 'B' || indicator_arr[0] === 'L')
+            && indicator_arr.every(val => val !== 'R');
+
+    }; // covers.Polygon_Point
 
     return Object.freeze(covers);
 
