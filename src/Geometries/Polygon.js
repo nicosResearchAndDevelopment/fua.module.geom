@@ -28,48 +28,20 @@ module.exports = ({
             return result;
         } // Polygon#equals
 
-        testPoint(from, to) {
-            // TODO temp
-            assert(isPoint(from) && isPoint(to), `${this[$name_tag]}#testPoint : invalid @param {Point} from/to`);
-            let result = this[$coords].map(coord => coord.testPoint(from, to));
-            if (result.some(char => char === "B")) {
-                return "Boundary";
-            } else if (result[0] === "L" && result.every(char => char !== "R")) {
-                return "Interior";
-            } else {
-                return "Exterior";
-            }
-        }
+        contains(that) {
+            assert(isGeometry(that), `${this[$name_tag]}#contains : invalid @param {Geometry} that`);
+            let result;
 
-        // contains(that) {
-        //     assert(isGeometry(that), `${this[$name_tag]}#contains : invalid @param {Geometry} that`);
+            if (isPoint(that))
+                result = algo.contains.Polygon_Point(this, that);
+            else
+                super.contains(that);
 
-        //     if (isPoint(that)) {
-        //         const
-        //             bbox = this.bbox(true),
-        //             check_line = that.lineTo(bbox.max);
-
-        //         // NOTE actually the direction of the polygons linestring decide, whether it covers the inside or the outside
-        //         // TODO this algorithm currently does not cover all cases of polygons an might compute wrong results,
-        //         //      if the polygons are the other way around
-        //         return this[$coords].every((ring, index) => {
-        //             let count = index > 0 ? 1 : 0;
-        //             for (let i = 1; i < ring[$coords].length; i++) {
-        //                 if (ring[$coords][i - 1].lineTo(ring[$coords][i]).intersects(check_line) !== check_line.contains(ring[$coords][i]))
-        //                     count++;
-        //             }
-        //             // if the count of intersections with the check_line is even, the point is outside the polygon
-        //             // though this only applies for the first linear ring, because all further rings are holes
-        //             // thats why the count is increased for all but the first ring
-        //             return count % 2 > 0;
-        //         });
-        //     } else {
-        //         return super.contains(that); // TODO
-        //     }
-        // } // Polygon#contains
+            return result;
+        } // Polygon#contains
 
         covers(that) {
-            assert(isGeometry(that), `${this[$name_tag]}#equals : invalid @param {Geometry} that`);
+            assert(isGeometry(that), `${this[$name_tag]}#covers : invalid @param {Geometry} that`);
             let result;
 
             if (isPoint(that))

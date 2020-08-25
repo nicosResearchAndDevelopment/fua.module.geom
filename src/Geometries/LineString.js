@@ -70,6 +70,24 @@ module.exports = ({
             return result;
         } // LineString#covers
 
+        overlaps(that) {
+            assert(isGeometry(that), `${this[$name_tag]}#intersects : invalid @param {Geometry} that`);
+            let result;
+
+            if (isLineString(that)) {
+                const thatLineArray = that.toLineArray();
+                result = this.toLineArray().some(
+                    thisLine => thatLineArray.some(
+                        thatLine => thisLine.overlaps(thatLine)
+                    )
+                );
+            } else {
+                result = super.covers(that);
+            }
+
+            return result;
+        }
+
     } // LineString
 
     return LineString;

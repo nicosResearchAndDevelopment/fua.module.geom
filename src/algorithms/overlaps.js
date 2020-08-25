@@ -20,18 +20,19 @@ module.exports = ({
      * @returns {Boolean}
      */
     overlaps.Line_Line = function (left, right) {
+        // TODO covers or contains???
         return (
-            algo.contains.Line_Point(left, right.from)
-            && (algo.contains.Line_Point(left, right.to)
-                || algo.contains.Line_Point(right, left.from)
-                || algo.contains.Line_Point(right, left.to))
+            algo.covers.Line_Point(left, right.from)
+            && (algo.covers.Line_Point(left, right.to)
+                || algo.covers.Line_Point(right, left.from)
+                || algo.covers.Line_Point(right, left.to))
         ) || (
-                algo.contains.Line_Point(left, right.to)
-                && (algo.contains.Line_Point(right, left.from)
-                    || algo.contains.Line_Point(right, left.to))
+                algo.covers.Line_Point(left, right.to)
+                && (algo.covers.Line_Point(right, left.from)
+                    || algo.covers.Line_Point(right, left.to))
             ) || (
-                algo.contains.Line_Point(right, left.from)
-                && algo.contains.Line_Point(right, left.to)
+                algo.covers.Line_Point(right, left.from)
+                && algo.covers.Line_Point(right, left.to)
             );
     }; // overlaps.Line_Line
 

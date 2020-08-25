@@ -45,7 +45,21 @@ console.log([
     `> [1.5, 1.5]: ` + polygon.covers(Point.from([1.5, 1.5])) + ` -> exterior`,
     `> [-1, -1]: ` + polygon.covers(Point.from([-1, -1])) + ` -> exterior`,
     `> [4, 1]: ` + polygon.covers(Point.from([4, 1])) + ` -> exterior`,
-    `> [0, 0]: ` + polygon.covers(Point.from([0, 0])) + ` -> boundary`
+    `> [0, 0]: ` + polygon.covers(Point.from([0, 0])) + ` -> boundary`,
+    `> [3, 2]: ` + polygon.covers(Point.from([3, 2])) + ` -> boundary`
+].join("\n"));
+
+console.log([
+    `polygon.contains:`,
+    `> [.5, .5]: ` + polygon.contains(Point.from([.5, .5])) + ` -> interior`,
+    `> [2, 2]: ` + polygon.contains(Point.from([2, 2])) + ` -> boundary`,
+    `> [2.6, 1.8]: ` + polygon.contains(Point.from([2.6, 1.8])) + ` -> interior`,
+    `> [1, 3]: ` + polygon.contains(Point.from([1, 3])) + ` -> boundary`,
+    `> [1.5, 1.5]: ` + polygon.contains(Point.from([1.5, 1.5])) + ` -> exterior`,
+    `> [-1, -1]: ` + polygon.contains(Point.from([-1, -1])) + ` -> exterior`,
+    `> [4, 1]: ` + polygon.contains(Point.from([4, 1])) + ` -> exterior`,
+    `> [0, 0]: ` + polygon.contains(Point.from([0, 0])) + ` -> boundary`,
+    `> [3, 2]: ` + polygon.contains(Point.from([3, 2])) + ` -> boundary`
 ].join("\n"));
 
 // console.log("polygon.covers:", polygon.covers(Point.from([.5, .5])));

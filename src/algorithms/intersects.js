@@ -65,7 +65,6 @@ module.exports = ({
             // rt: the factor of r to reach the intersection with l
             rt;
 
-
         if (drx > dry) {
             // use rx as devider
             const tmp = ry / rx;

@@ -1,17 +1,29 @@
-const geom = require('../src/module.geom.js')();
-const { Point } = geom;
+const {
+    geom: { Point, LineString },
+    pnt0, pnt1, pnt2, pnt3, pnt4, pnt5, pnt6, pnt7, pnt8,
+    lns0, lns1, lns2,
+    poly0
+} = require('./test.setup.js');
 
 describe("a Point should", () => {
 
-    const point = new Point(4, 2);
+    test("equal another Point, if their coords are (nearly) the same", () => {
+        expect(pnt1.equals(pnt1)).toBeTruthy();
+        expect(pnt1.equals(new Point(pnt1.x, pnt1.y))).toBeTruthy();
+        expect(pnt1.equals(new Point(pnt1.x + Number.EPSILON, pnt1.y - Number.EPSILON))).toBeTruthy();
+    });
 
-    test("equal another Point, if their coords are the same", () => {
-        expect(point.equals(new Point(4, 2))).toBeTruthy();
-        expect(point.equals(new Point(...point.coordinates()))).toBeTruthy();
-        expect(point.equals(new Point(4, 2 - Number.EPSILON))).toBeTruthy();
-        expect(point.equals(new Point(6, 9))).toBeFalsy();
-        expect(point.equals(new Point(4, 2.0001))).toBeFalsy();
-        expect(point.equals(new Point(-4, 2))).toBeFalsy();
+    test("not equal any Point that has not the same coordinates", () => {
+        expect(pnt1.equals(pnt2)).toBeFalsy();
+        expect(pnt0.equals(pnt3)).toBeFalsy();
+        expect(pnt1.equals(new Point(pnt1.x, pnt1.y + .0001))).toBeFalsy();
+        expect(pnt2.equals(new Point(-pnt2.x, pnt2.y))).toBeFalsy();
+    });
+
+    test("not equal anything else other than Points/MultiPoints", () => {
+        expect(pnt0.equals(lns0)).toBeFalsy();
+        expect(pnt3.equals(poly0)).toBeFalsy();
+        expect(pnt5.equals(lns1)).toBeFalsy();
     });
 
 });

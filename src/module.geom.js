@@ -3,6 +3,7 @@ const
     initExport = require('./export.js'),
     initUtility = require('./utility.js'),
     initEquals = require('./algorithms/equals.js'),
+    initPreprocess = require('./algorithms/preprocess.js'),
     initIntersects = require('./algorithms/intersects.js'),
     initTouches = require('./algorithms/touches.js'),
     initContains = require('./algorithms/contains.js'),
@@ -32,6 +33,7 @@ module.exports = ({
         util = initUtility({ geom, conf, hrt }),
         param = Object.freeze({ geom, algo, conf, util });
 
+    algo.preprocess = initPreprocess(param);
     algo.equals = initEquals(param);
     algo.intersects = initIntersects(param);
     algo.touches = initTouches(param);

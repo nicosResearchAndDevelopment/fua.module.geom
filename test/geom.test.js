@@ -1,9 +1,9 @@
-const geom = require('../src/module.geom.js')({
-    serializer: 'toJSON',
-    deserializer: 'from',
-    prefix: "geom"
-});
-const { Geometry, Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon, GeometryCollection } = geom;
+const {
+    geom: { Geometry, Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon, GeometryCollection },
+    pnt0, pnt1, pnt2, pnt3, pnt4, pnt5, pnt6, pnt7, pnt8,
+    lns0, lns1, lns2,
+    poly0
+} = require('./test.setup.js');
 
 describe("a Geometry should", () => {
 
@@ -15,7 +15,7 @@ describe("a Geometry should", () => {
                 [4, 5, 6],
                 [7, 8, 9]
             ]
-        })).toBeInstanceOf(geom.LineString);
+        })).toBeInstanceOf(LineString);
     });
 
     test("serialize into the same argument from deserialization", () => {

@@ -24,6 +24,16 @@ module.exports = ({
         assert(false, `algo.contains.Line_Point : not implemented`);
     }; // contains.Line_Point
 
+    /** 
+     * @param {Polygon} left 
+     * @param {Point} right 
+     * @returns {Boolean}
+     */
+    contains.Polygon_Point = function (left, right) {
+        const intersection_pattern = algo.preprocess.Polygon_Point_intersection_pattern(left, right);
+        return /^[L][LE]*$/.test(intersection_pattern);
+    }; // contains.Polygon_Point
+
     return Object.freeze(contains);
 
 }; // module.exports
