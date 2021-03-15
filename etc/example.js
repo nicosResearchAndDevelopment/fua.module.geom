@@ -1,5 +1,8 @@
-const geom = require('../src/module.geom.js')();
-const { Geometry, Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon, GeometryCollection } = geom;
+const
+    geom = require('../src/module.geom.js'),
+    {
+        Geometry, Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon, GeometryCollection
+    }    = geom;
 
 // console.log("geom:", geom);
 
@@ -65,4 +68,5 @@ console.log([
 // console.log("polygon.covers:", polygon.covers(Point.from([.5, .5])));
 // console.log("polygon.covers false:", polygon.covers(Point.from([1.5, 1.5])));
 
-debugger; process.exit(0);
+debugger;
+process.exit(0);

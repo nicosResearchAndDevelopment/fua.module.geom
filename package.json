@@ -1,5 +1,5 @@
 {
-  "name": "module.geom",
+  "name": "@nrd/fua.module.geom",
   "version": "1.0.0",
   "description": "",
   "main": "src/module.geom.js",
@@ -7,12 +7,9 @@
     "mocha": "^8.2.1",
     "expect": "^26.6.2"
   },
-  "directories": {
-    "test": "test"
-  },
   "scripts": {
     "test": "mocha",
-    "example": "node test/example.js"
+    "example": "node etc/example.js"
   },
   "mocha": {
     "bail": false,
@@ -27,6 +24,6 @@
     "GeoJSON",
     "Geometry"
   ],
-  "author": "",
-  "license": "ISC"
+  "author": "Simon Petrac <spetrac@nicos-ag.com>",
+  "license": "UNLICENSED"
 }

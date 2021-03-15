@@ -1,10 +1,12 @@
-exports.geom = require('../src/module.geom.js')({
-    'prefix': 'geom',
-    'serializer': 'toJSON',
-    'deserializer': 'from'
-});
+//exports.geom = require('../back/2021_03_15/src/module.geom.js')({
+//    'prefix':       'geom',
+//    'serializer':   'toJSON',
+//    'deserializer': 'from'
+//});
 
-const { Point, LineString, Polygon } = exports.geom;
+exports.geom = require('../src/module.geom.js');
+
+const {Point, LineString, Polygon} = exports.geom;
 
 exports.pnt0 = Point.from([1.5, 1.5]);
 exports.pnt1 = Point.from([4, 2]);

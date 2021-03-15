@@ -1,62 +1,105 @@
 const
-    initConfig = require('./config.js'),
-    initExport = require('./export.js'),
-    initUtility = require('./utility.js'),
-    initEquals = require('./algorithms/equals.js'),
-    initPreprocess = require('./algorithms/preprocess.js'),
-    initIntersects = require('./algorithms/intersects.js'),
-    initTouches = require('./algorithms/touches.js'),
-    initContains = require('./algorithms/contains.js'),
-    initOverlaps = require('./algorithms/overlaps.js'),
-    initCovers = require('./algorithms/covers.js'),
-    initCrosses = require('./algorithms/crosses.js'),
-    initGeometry = require('./geometries/Geometry.js'),
-    initPoint = require('./geometries/Point.js'),
-    initBBox = require('./geometries/BBox.js'),
-    initMultiPoint = require('./geometries/MultiPoint.js'),
-    initLine = require('./geometries/Line.js'),
-    initLineString = require('./geometries/LineString.js'),
-    initMultiLineString = require('./geometries/MultiLineString.js'),
-    initLinearRing = require('./geometries/LinearRing.js'),
-    initPolygon = require('./geometries/Polygon.js'),
-    initMultiPolygon = require('./geometries/MultiPolygon.js'),
-    initGeometryCollection = require('./geometries/GeometryCollection.js');
+    {
+        PREFIX, assert, isObject, $serialize, $deserialize
+    }          = require('./module.geom.util.js'),
+    {
+        Geometry,
+        Point, MultiPoint,
+        LineString, MultiLineString,
+        Polygon, MultiPolygon,
+        GeometryCollection
+    }          = require('./geometries'),
+    isGeometry = (value) => value instanceof Geometry;
 
-module.exports = ({
-    'hrt': hrt = () => 1e-3 * Date.now(),
-    'config': config = {}
-} = {}) => {
+exports.$serialize = function (geometry) {
+    assert(isGeometry(geometry), `${PREFIX}:$serialize : invalid @param {Geometry} geometry`, TypeError);
+    return geometry[$serialize]();
+};
 
-    const
-        geom = {}, algo = {},
-        conf = initConfig(config),
-        util = initUtility({ geom, conf, hrt }),
-        param = Object.freeze({ geom, algo, conf, util });
+exports.$deserialize = function (json) {
+    assert(isObject(json), `${PREFIX}:$deserialize : invalid @param {Object} json`, TypeError);
+    return Geometry[$deserialize](json);
+};
 
-    algo.preprocess = initPreprocess(param);
-    algo.equals = initEquals(param);
-    algo.intersects = initIntersects(param);
-    algo.touches = initTouches(param);
-    algo.contains = initContains(param);
-    algo.overlaps = initOverlaps(param);
-    algo.covers = initCovers(param);
-    algo.crosses = initCrosses(param);
-    Object.freeze(algo);
+exports.Geometry           = Geometry;
+exports.Point              = Point;
+exports.MultiPoint         = MultiPoint;
+exports.LineString         = LineString;
+exports.MultiLineString    = MultiLineString;
+exports.Polygon            = Polygon;
+exports.MultiPolygon       = MultiPolygon;
+exports.GeometryCollection = GeometryCollection;
 
-    geom.Geometry = initGeometry(param);
-    geom.Point = initPoint(param);
-    geom.BBox = initBBox(param);
-    geom.MultiPoint = initMultiPoint(param);
-    geom.Line = initLine(param);
-    geom.LineString = initLineString(param);
-    geom.MultiLineString = initMultiLineString(param);
-    geom.LinearRing = initLinearRing(param);
-    geom.Polygon = initPolygon(param);
-    geom.MultiPolygon = initMultiPolygon(param);
-    geom.GeometryCollection = initGeometryCollection(param);
-    Object.freeze(geom);
+exports.equals = function (left, right) {
+    assert(isGeometry(left), `${PREFIX}:equals : invalid @param {Geometry} left`, TypeError);
+    assert(isGeometry(right), `${PREFIX}:equals : invalid @param {Geometry} right`, TypeError);
+    left.equals(right);
+};
 
-    return initExport(param);
+exports.disjoint = function (left, right) {
+    assert(isGeometry(left), `${PREFIX}:disjoint : invalid @param {Geometry} left`, TypeError);
+    assert(isGeometry(right), `${PREFIX}:disjoint : invalid @param {Geometry} right`, TypeError);
+    left.disjoint(right);
+};
 
-}; // module.exports
+exports.intersects = function (left, right) {
+    assert(isGeometry(left), `${PREFIX}:intersects : invalid @param {Geometry} left`, TypeError);
+    assert(isGeometry(right), `${PREFIX}:intersects : invalid @param {Geometry} right`, TypeError);
+    left.intersects(right);
+};
 
+exports.touches = function (left, right) {
+    assert(isGeometry(left), `${PREFIX}:touches : invalid @param {Geometry} left`, TypeError);
+    assert(isGeometry(right), `${PREFIX}:touches : invalid @param {Geometry} right`, TypeError);
+    left.touches(right);
+};
+
+exports.meets = function (left, right) {
+    assert(isGeometry(left), `${PREFIX}:meets : invalid @param {Geometry} left`, TypeError);
+    assert(isGeometry(right), `${PREFIX}:meets : invalid @param {Geometry} right`, TypeError);
+    left.meets(right);
+};
+
+exports.contains = function (left, right) {
+    assert(isGeometry(left), `${PREFIX}:contains : invalid @param {Geometry} left`, TypeError);
+    assert(isGeometry(right), `${PREFIX}:contains : invalid @param {Geometry} right`, TypeError);
+    left.contains(right);
+};
+
+exports.overlaps = function (left, right) {
+    assert(isGeometry(left), `${PREFIX}:overlaps : invalid @param {Geometry} left`, TypeError);
+    assert(isGeometry(right), `${PREFIX}:overlaps : invalid @param {Geometry} right`, TypeError);
+    left.overlaps(right);
+};
+
+exports.covers = function (left, right) {
+    assert(isGeometry(left), `${PREFIX}:covers : invalid @param {Geometry} left`, TypeError);
+    assert(isGeometry(right), `${PREFIX}:covers : invalid @param {Geometry} right`, TypeError);
+    left.covers(right);
+};
+
+exports.coveredBy = function (left, right) {
+    assert(isGeometry(left), `${PREFIX}:coveredBy : invalid @param {Geometry} left`, TypeError);
+    assert(isGeometry(right), `${PREFIX}:coveredBy : invalid @param {Geometry} right`, TypeError);
+    left.coveredBy(right);
+};
+
+exports.inside = function (left, right) {
+    assert(isGeometry(left), `${PREFIX}:inside : invalid @param {Geometry} left`, TypeError);
+    assert(isGeometry(right), `${PREFIX}:inside : invalid @param {Geometry} right`, TypeError);
+    left.inside(right);
+};
+
+exports.within = function (left, right) {
+    assert(isGeometry(left), `${PREFIX}:within : invalid @param {Geometry} left`, TypeError);
+    assert(isGeometry(right), `${PREFIX}:within : invalid @param {Geometry} right`, TypeError);
+    left.within(right);
+};
+
+exports.crosses = function (left, right) {
+    assert(isGeometry(left), `${PREFIX}:crosses : invalid @param {Geometry} left`, TypeError);
+    assert(isGeometry(right), `${PREFIX}:crosses : invalid @param {Geometry} right`, TypeError);
+    left.crosses(right);
+};
+
+Object.freeze(exports);

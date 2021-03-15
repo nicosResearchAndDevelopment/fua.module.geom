@@ -1,0 +1,9 @@
+exports.preprocess = Object.freeze(require('./preprocess.js'));
+exports.equals     = Object.freeze(require('./equals.js'));
+exports.intersects = Object.freeze(require('./intersects.js'));
+exports.touches    = Object.freeze(require('./touches.js'));
+exports.contains   = Object.freeze(require('./contains.js'));
+exports.overlaps   = Object.freeze(require('./overlaps.js'));
+exports.covers     = Object.freeze(require('./covers.js'));
+exports.crosses    = Object.freeze(require('./crosses.js'));
+module.exports     = Object.freeze({...exports});
