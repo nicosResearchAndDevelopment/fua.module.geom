@@ -1,9 +1,12 @@
-const {
-    geom: { Point, LineString },
-    pnt0, pnt1, pnt2, pnt3, pnt4, pnt5, pnt6, pnt7, pnt8,
-    lns0, lns1, lns2,
-    poly0
-} = require('./test.setup.js');
+const
+    {describe, test} = require('mocha'),
+    expect           = require('expect'),
+    {
+        geom: {Point, LineString},
+        pnt0, pnt1, pnt2, pnt3, pnt4, pnt5, pnt6, pnt7, pnt8,
+        lns0, lns1, lns2,
+        poly0
+    }                = require('./test.setup.js');
 
 describe("a Point should", () => {
 
