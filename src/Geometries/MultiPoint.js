@@ -35,7 +35,7 @@ class MultiPoint extends geom.Geometry {
 
         if (this === that)
             result = true;
-        if (isPoint(that))
+        else if (isPoint(that))
             result = this.size > 0
                 && this[$coords].some(coord => coord.equals(that));
         else if (isMultiPoint(that) || isGeometryCollection(that))

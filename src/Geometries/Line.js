@@ -52,9 +52,9 @@ class Line extends geom.Geometry {
 
         if (this === that)
             result = true;
-        if (isPoint(that))
+        else if (isPoint(that))
             result = false;
-        if (isLine(that))
+        else if (isLine(that))
             result = algo.equals.Line_Line(this, that);
         else
             result = super.equals(that);

@@ -90,7 +90,7 @@ class Point extends geom.Geometry {
 
         if (this === that)
             result = true;
-        if (isPoint(that))
+        else if (isPoint(that))
             result = algo.equals.Point_Point(this, that);
         else if (isMultiPoint(that) || isGeometryCollection(that))
             result = that.equals(this);

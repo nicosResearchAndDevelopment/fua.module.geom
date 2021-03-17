@@ -37,18 +37,21 @@ class LinearRing extends geom.LineString {
         if (super.add(coord)) {
             this[$coords][this.size - 2] = this[$coords][this.size - 1];
             this[$coords][this.size - 1] = this[$coords][0];
+            return true;
         }
     } // LinearRing#add
 
     insert(coord) {
         if (super.insert(coord)) {
             this[$coords][this.size - 1] = this[$coords][0];
+            return true;
         }
     } // LinearRing#insert
 
     remove(coord) {
         if (super.remove(coord)) {
             this[$coords][this.size - 1] = this[$coords][0];
+            return true;
         }
     } // LinearRing#remove
 
