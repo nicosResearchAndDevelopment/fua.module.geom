@@ -4,7 +4,9 @@
   "description": "",
   "main": "src/module.geom.js",
   "files": [
-    "src/*"
+    "src/*",
+    "src/geometries/*",
+    "src/algorithms/*"
   ],
   "dependencies": {
     "@nrd/fua.core.util": "1.0.0"
