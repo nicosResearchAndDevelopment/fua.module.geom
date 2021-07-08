@@ -1,0 +1,12 @@
+exports.Geometry           = require('./Geometry.js');
+exports.Point              = require('./Point.js');
+exports.BBox               = require('./BBox.js');
+exports.MultiPoint         = require('./MultiPoint.js');
+exports.Line               = require('./Line.js');
+exports.LineString         = require('./LineString.js');
+exports.MultiLineString    = require('./MultiLineString.js');
+exports.LinearRing         = require('./LinearRing.js');
+exports.Polygon            = require('./Polygon.js');
+exports.MultiPolygon       = require('./MultiPolygon.js');
+exports.GeometryCollection = require('./GeometryCollection.js');
+module.exports             = Object.freeze({...exports});

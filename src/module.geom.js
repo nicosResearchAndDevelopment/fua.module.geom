@@ -8,7 +8,7 @@ const
         LineString, MultiLineString,
         Polygon, MultiPolygon,
         GeometryCollection
-    }          = require('./geometries/index.js'),
+    }          = require('./geometries'),
     isGeometry = (value) => value instanceof Geometry;
 
 exports.$serialize = function (geometry) {
