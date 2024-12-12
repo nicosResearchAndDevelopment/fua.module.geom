@@ -1,6 +1,6 @@
 const
     _           = exports,
-    util        = require('@nrd/fua.core.util'),
+    util        = require('@fua/core.util'),
     MODULE_NAME = 'module.geom';
 
 _.PREFIX           = 'geom';
